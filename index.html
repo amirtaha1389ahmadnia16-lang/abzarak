@@ -1,905 +1,828 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=yes"
-    />
-    <title>حرفه‌ای | تبدیل صدا به متن با قابلیت ویرایش مستقیم</title>
-    <!-- Font Awesome 6 (free) -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Dictation Pro | تبدیل صدای حرفه‌ای به متن (قابل ویرایش)</title>
+    <!-- Font Awesome 6 (Free CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Font: Vazir (وزیر) -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" type="text/css" />
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      :root {
-        --bg-gradient: linear-gradient(135deg, #f5f7fc 0%, #e9eef5 100%);
-        --card-bg: rgba(255, 255, 255, 0.92);
-        --text-primary: #1a2634;
-        --text-secondary: #4a5b6e;
-        --border-light: rgba(0, 0, 0, 0.08);
-        --primary: #2b7a4b;
-        --primary-dark: #1e5a38;
-        --primary-glow: rgba(43, 122, 75, 0.25);
-        --danger: #dc3545;
-        --danger-glow: rgba(220, 53, 69, 0.2);
-        --warning: #f0ad4e;
-        --success: #28a745;
-        --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0 12px 28px rgba(0, 0, 0, 0.08);
-        --transition: all 0.2s ease;
-      }
-
-      body.dark {
-        --bg-gradient: linear-gradient(135deg, #1a1f2c 0%, #0f131f 100%);
-        --card-bg: rgba(30, 35, 48, 0.92);
-        --text-primary: #eef2ff;
-        --text-secondary: #a5b4cb;
-        --border-light: rgba(255, 255, 255, 0.1);
-        --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 12px 28px rgba(0, 0, 0, 0.4);
-      }
-
-      body {
-        background: var(--bg-gradient);
-        color: var(--text-primary);
-        font-family:
-          "Segoe UI",
-          "Vazir",
-          system-ui,
-          -apple-system,
-          sans-serif;
-        min-height: 100vh;
-        padding: 2rem 1rem;
-        transition: var(--transition);
-      }
-
-      .container {
-        max-width: 1100px;
-        margin: 0 auto;
-      }
-
-      /* header style */
-      .hero {
-        text-align: center;
-        margin-bottom: 2rem;
-      }
-
-      .hero h1 {
-        font-size: 2rem;
-        background: linear-gradient(120deg, #2b7a4b, #1e5a38);
-        background-clip: text;
-        -webkit-background-clip: text;
-        color: transparent;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .hero p {
-        color: var(--text-secondary);
-        margin-top: 0.5rem;
-      }
-
-      /* theme toggle */
-      .theme-toggle {
-        position: fixed;
-        top: 1.2rem;
-        left: 1.2rem;
-        background: var(--card-bg);
-        backdrop-filter: blur(8px);
-        border: 1px solid var(--border-light);
-        border-radius: 3rem;
-        padding: 0.6rem 1rem;
-        cursor: pointer;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        z-index: 100;
-        box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-      }
-
-      .theme-toggle:hover {
-        transform: scale(0.97);
-        background: var(--primary);
-        color: white;
-      }
-
-      /* main card */
-      .speech-card {
-        background: var(--card-bg);
-        backdrop-filter: blur(12px);
-        border-radius: 2rem;
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--border-light);
-        padding: 1.8rem;
-        transition: var(--transition);
-      }
-
-      /* settings */
-      .settings-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.2rem;
-        margin-bottom: 1.8rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--border-light);
-      }
-
-      .lang-box {
-        flex: 2;
-        min-width: 180px;
-      }
-
-      .lang-box label,
-      .continuous-box label {
-        display: block;
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-bottom: 0.3rem;
-        color: var(--text-secondary);
-      }
-
-      select,
-      button {
-        font-family: inherit;
-      }
-
-      select {
-        width: 100%;
-        padding: 0.6rem 1rem;
-        border-radius: 1rem;
-        border: 1px solid var(--border-light);
-        background: var(--card-bg);
-        color: var(--text-primary);
-        cursor: pointer;
-        font-weight: 500;
-      }
-
-      .continuous-box {
-        flex: 1;
-        display: flex;
-        align-items: flex-end;
-      }
-
-      .continuous-box label {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-        background: rgba(0, 0, 0, 0.03);
-        padding: 0.5rem 1rem;
-        border-radius: 2rem;
-      }
-
-      /* mic status & vu meter */
-      .mic-panel {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 1.8rem;
-      }
-
-      .status-chip {
-        background: rgba(0, 0, 0, 0.05);
-        padding: 0.4rem 1.2rem;
-        border-radius: 3rem;
-        font-weight: 600;
-        font-size: 0.85rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        border: 1px solid var(--border-light);
-      }
-
-      .status-chip.recording-active {
-        background: var(--danger);
-        color: white;
-        animation: pulseMic 1.2s infinite;
-      }
-
-      @keyframes pulseMic {
-        0% {
-          box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        70% {
-          box-shadow: 0 0 0 8px rgba(220, 53, 69, 0);
-        }
-        100% {
-          box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
-        }
-      }
 
-      .vu-container {
-        flex: 1;
-        min-width: 160px;
-      }
-      canvas#vuCanvas {
-        width: 100%;
-        height: 42px;
-        background: rgba(0, 0, 0, 0.1);
-        border-radius: 20px;
-        display: block;
-      }
-      .record-buttons {
-        display: flex;
-        gap: 0.8rem;
-        flex-wrap: wrap;
-        margin-bottom: 1.8rem;
-      }
-      .btn {
-        border: none;
-        padding: 0.7rem 1.6rem;
-        border-radius: 2rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.6rem;
-        cursor: pointer;
-        transition: 0.2s;
-        background: #eef2f7;
-        color: #1f2a3e;
-      }
-      .btn-primary {
-        background: var(--primary);
-        color: white;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-      .btn-primary:hover {
-        background: var(--primary-dark);
-        transform: translateY(-2px);
-      }
-      .btn-outline {
-        background: transparent;
-        border: 1.5px solid var(--border-light);
-        color: var(--text-primary);
-      }
-      .btn-outline:hover {
-        background: rgba(0, 0, 0, 0.05);
-      }
-      .btn-danger {
-        background: var(--danger);
-        color: white;
-      }
-      .btn-danger:hover {
-        background: #c82333;
-      }
-      .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      /* text areas */
-      .final-text-area {
-        margin-top: 1rem;
-      }
-      .final-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        margin-bottom: 0.6rem;
-      }
-      .stats {
-        font-size: 0.75rem;
-        background: rgba(0, 0, 0, 0.05);
-        padding: 0.2rem 0.8rem;
-        border-radius: 2rem;
-      }
-      .action-icons {
-        display: flex;
-        gap: 0.5rem;
-      }
-      .icon-btn {
-        background: transparent;
-        border: none;
-        font-size: 1.1rem;
-        cursor: pointer;
-        padding: 0.3rem 0.7rem;
-        border-radius: 2rem;
-        transition: 0.2s;
-        color: var(--text-secondary);
-      }
-      .icon-btn:hover {
-        background: rgba(0, 0, 0, 0.08);
-        color: var(--primary);
-      }
-      textarea {
-        width: 100%;
-        padding: 1rem;
-        border-radius: 1.2rem;
-        border: 1.5px solid var(--border-light);
-        background: rgba(0, 0, 0, 0.02);
-        color: var(--text-primary);
-        font-size: 1rem;
-        line-height: 1.6;
-        font-family: inherit;
-        resize: vertical;
-      }
-      textarea:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-glow);
-      }
-      .interim-box {
-        margin-top: 1rem;
-        background: rgba(0, 0, 0, 0.03);
-        border-radius: 1rem;
-        padding: 0.6rem 1rem;
-        border-right: 4px solid var(--primary);
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-        direction: rtl;
-        word-break: break-word;
-      }
-      .interim-label {
-        font-size: 0.7rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-      }
-      .info-tip {
-        margin-top: 1rem;
-        font-size: 0.75rem;
-        text-align: center;
-        color: var(--text-secondary);
-      }
-      hr {
-        margin: 1rem 0;
-        border-color: var(--border-light);
-      }
-      @media (max-width: 640px) {
-        .speech-card {
-          padding: 1.2rem;
+        :root {
+            --bg-gradient: radial-gradient(circle at 10% 20%, rgba(248, 249, 255, 1) 0%, rgba(238, 242, 250, 1) 100%);
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --card-border: rgba(0, 0, 0, 0.08);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --accent: #0f3b2c;
+            --accent-light: #2c7a4d;
+            --accent-glow: rgba(44, 122, 77, 0.25);
+            --danger: #e53e3e;
+            --danger-glow: rgba(229, 62, 62, 0.2);
+            --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 25px 45px -12px rgba(0, 0, 0, 0.2);
+            --transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-        .btn {
-          padding: 0.5rem 1.2rem;
+
+        body.dark {
+            --bg-gradient: radial-gradient(circle at 20% 30%, #121826 0%, #0b0f17 100%);
+            --card-bg: rgba(28, 33, 48, 0.92);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #edf2f7;
+            --text-secondary: #a0aec0;
+            --accent: #48bb78;
+            --accent-light: #68d391;
+            --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            font-family: 'Vazir', 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            padding: 1.8rem 1rem;
+            transition: var(--transition);
+            backdrop-filter: blur(2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header PRO */
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
         }
         .hero h1 {
-          font-size: 1.5rem;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(125deg, var(--accent-light), #1f5e3f);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
         }
-      }
-      .toast-msg {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #1e2a3a;
-        color: white;
-        padding: 0.6rem 1.2rem;
-        border-radius: 2rem;
-        font-size: 0.8rem;
-        z-index: 999;
-        opacity: 0;
-        transition: 0.2s;
-        pointer-events: none;
-      }
-      .toast-msg.show {
-        opacity: 1;
-        transform: translateY(-5px);
-      }
+        .hero .badge-pro {
+            background: rgba(0,0,0,0.1);
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: var(--accent-light);
+        }
+        .hero p {
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Theme toggle premium */
+        .theme-toggle-premium {
+            position: fixed;
+            top: 1.2rem;
+            left: 1.2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 60px;
+            padding: 0.5rem 1.2rem;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+        .theme-toggle-premium:hover {
+            background: var(--accent-light);
+            color: white;
+            transform: scale(0.97);
+        }
+
+        /* Card principle */
+        .dictation-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--card-border);
+            padding: 1.8rem 2rem;
+            transition: var(--transition);
+        }
+
+        /* تنظیمات پیشرفته */
+        .settings-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1.5px solid var(--card-border);
+            align-items: flex-end;
+        }
+        .lang-group {
+            flex: 2;
+            min-width: 200px;
+        }
+        .lang-group label, .continuous-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.4rem;
+            color: var(--text-secondary);
+        }
+        select {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 1.2rem;
+            border: 1.5px solid var(--card-border);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-family: 'Vazir', monospace;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .continuous-group {
+            flex: 1;
+        }
+        .checkbox-wrapper {
+            background: rgba(0,0,0,0.03);
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+        }
+
+        /* میکروفون + متر حرفه‌ای */
+        .mic-studio {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .status-pill {
+            background: rgba(0,0,0,0.05);
+            border-radius: 60px;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--card-border);
+        }
+        .status-pill.recording {
+            background: var(--danger);
+            color: white;
+            animation: glowPulse 1.2s infinite;
+        }
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 0 0 rgba(229,62,62,0.5);}
+            70% { box-shadow: 0 0 0 10px rgba(229,62,62,0);}
+            100% { box-shadow: 0 0 0 0 rgba(229,62,62,0);}
+        }
+        .timer-pro {
+            font-family: monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: rgba(0,0,0,0.2);
+            padding: 0.2rem 0.9rem;
+            border-radius: 3rem;
+            letter-spacing: 2px;
+        }
+        .vu-metro {
+            flex: 2;
+            min-width: 180px;
+        }
+        canvas#waveCanvas {
+            width: 100%;
+            height: 48px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 40px;
+            display: block;
+        }
+        .action-buttons-pro {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .btn-pro {
+            border: none;
+            padding: 0.8rem 1.6rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            background: rgba(0,0,0,0.05);
+            color: var(--text-primary);
+        }
+        .btn-primary-pro {
+            background: var(--accent-light);
+            color: white;
+            box-shadow: 0 5px 12px rgba(44,122,77,0.3);
+        }
+        .btn-primary-pro:hover {
+            background: #1f5e3f;
+            transform: translateY(-2px);
+        }
+        .btn-outline-pro {
+            border: 1.5px solid var(--card-border);
+            background: transparent;
+        }
+        .btn-outline-pro:hover {
+            background: var(--accent-light);
+            color: white;
+            border-color: var(--accent-light);
+        }
+        .btn-danger-pro {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-danger-pro:hover {
+            background: #c53030;
+            transform: scale(0.97);
+        }
+
+        /* منطقه متن اصلی (قابل ویرایش) */
+        .text-master {
+            margin-top: 0.6rem;
+        }
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .stats-badge {
+            background: rgba(0,0,0,0.05);
+            border-radius: 30px;
+            padding: 0.2rem 1rem;
+            font-size: 0.75rem;
+        }
+        .tool-icons {
+            display: flex;
+            gap: 0.3rem;
+        }
+        .icon-btn-pro {
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--text-secondary);
+        }
+        .icon-btn-pro:hover {
+            background: var(--accent-light);
+            color: white;
+        }
+        textarea {
+            width: 100%;
+            padding: 1.2rem;
+            border-radius: 1.5rem;
+            border: 1.5px solid var(--card-border);
+            background: rgba(0,0,0,0.02);
+            color: var(--text-primary);
+            font-family: 'Vazir', monospace;
+            font-size: 1rem;
+            line-height: 1.7;
+            resize: vertical;
+            transition: 0.2s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+        .interim-live {
+            background: rgba(0,0,0,0.03);
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem;
+            margin-top: 1rem;
+            border-right: 4px solid var(--accent-light);
+            font-size: 0.85rem;
+        }
+        .info-footer {
+            margin-top: 1.2rem;
+            font-size: 0.7rem;
+            text-align: center;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        hr {
+            margin: 1rem 0;
+            border-color: var(--card-border);
+        }
+        @media (max-width: 640px) {
+            .dictation-card { padding: 1.2rem; }
+            .hero h1 { font-size: 1.6rem; }
+            .timer-pro { font-size: 1rem; }
+        }
+        .toast-elite {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #1e293b;
+            color: white;
+            padding: 0.6rem 1.4rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+        }
+        .toast-elite.show {
+            opacity: 1;
+            transform: translateY(-6px);
+        }
+        .blink-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 14px;
+            background: var(--accent-light);
+            animation: blink 1s infinite;
+            margin-right: 2px;
+        }
+        @keyframes blink {
+            0%,100%{ opacity: 1; } 50%{ opacity: 0; }
+        }
     </style>
-  </head>
-  <body>
-    <div class="theme-toggle" id="themeToggle">
-      <i class="fas fa-moon"></i>
-      <span>تم تاریک</span>
+</head>
+<body>
+<div class="theme-toggle-premium" id="themeSwitcher">
+    <i class="fas fa-moon"></i>
+    <span>تم شب</span>
+</div>
+<div class="container">
+    <div class="hero">
+        <h1><i class="fas fa-microphone-alt"></i> Dictation Pro <span class="badge-pro">Google Speech Engine</span></h1>
+        <p>تبدیل صدای زنده به متن با دقت بالا • ویرایش مستقیم • ابزارک حرفه‌ای</p>
     </div>
-    <div class="container">
-      <div class="hero">
-        <h1>
-          <i class="fas fa-microphone-alt"></i> هوش صوتی گوگل | دیکته حرفه‌ای
-        </h1>
-        <p>
-          ضبط زنده با Web Speech API (گوگل) · ویرایش مستقیم متن · خروجی
-          Word-like
-        </p>
-      </div>
-
-      <div class="speech-card">
-        <!-- تنظیمات -->
-        <div class="settings-grid">
-          <div class="lang-box">
-            <label><i class="fas fa-globe"></i> زبان گفتار</label>
-            <select id="languageSelect">
-              <option value="fa-IR">فارسی (ایران)</option>
-              <option value="en-US">انگلیسی (آمریکا)</option>
-              <option value="en-GB">انگلیسی (بریتانیا)</option>
-              <option value="ar-EG">عربی (مصر)</option>
-              <option value="tr-TR">ترکی استانبولی</option>
-              <option value="es-ES">اسپانیایی</option>
-              <option value="fr-FR">فرانسوی</option>
-              <option value="de-DE">آلمانی</option>
-              <option value="it-IT">ایتالیایی</option>
-              <option value="ru-RU">روسی</option>
-              <option value="ja-JP">ژاپنی</option>
-              <option value="ko-KR">کره‌ای</option>
-              <option value="zh-CN">چینی (ساده)</option>
-            </select>
-          </div>
-          <div class="continuous-box">
-            <label
-              ><input type="checkbox" id="continuousMode" checked />
-              <i class="fas fa-infinity"></i> ضبط پیوسته (بدون وقفه)</label
-            >
-          </div>
-        </div>
-
-        <!-- وضعیت میکروفون + VU meter حرفه‌ای -->
-        <div class="mic-panel">
-          <div class="status-chip" id="statusChip">
-            <i class="fas fa-microphone-slash"></i>
-            <span id="statusText">آماده</span>
-          </div>
-          <div class="vu-container">
-            <canvas
-              id="vuCanvas"
-              width="300"
-              height="40"
-              style="width: 100%; height: 40px"
-            ></canvas>
-          </div>
-        </div>
-
-        <div class="record-buttons">
-          <button id="startRecordBtn" class="btn btn-primary">
-            <i class="fas fa-play"></i> شروع ضبط
-          </button>
-          <button id="stopRecordBtn" class="btn btn-outline" disabled>
-            <i class="fas fa-stop"></i> توقف
-          </button>
-        </div>
-
-        <!-- ناحیه متن نهایی (قابل ویرایش) -->
-        <div class="final-text-area">
-          <div class="final-header">
-            <span class="stats" id="statsPanel"
-              ><i class="fas fa-chart-simple"></i> کلمات: 0 | کاراکتر: 0</span
-            >
-            <div class="action-icons">
-              <button class="icon-btn" id="copyFinalBtn" title="کپی متن">
-                <i class="fas fa-copy"></i>
-              </button>
-              <button
-                class="icon-btn"
-                id="downloadTxtBtn"
-                title="دانلود به صورت TXT"
-              >
-                <i class="fas fa-download"></i>
-              </button>
-              <button class="icon-btn" id="clearFinalBtn" title="پاک کردن همه">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-              <button
-                class="icon-btn"
-                id="autoSaveIndicator"
-                title="ذخیره خودکار فعال"
-                style="opacity: 0.7"
-              >
-                <i class="fas fa-save"></i>
-              </button>
+    <div class="dictation-card">
+        <!-- ردیف تنظیمات -->
+        <div class="settings-row">
+            <div class="lang-group">
+                <label><i class="fas fa-language"></i> زبان گفتار</label>
+                <select id="proLangSelect">
+                    <option value="fa-IR">فارسی (ایران)</option>
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                    <option value="ar-EG">العربية (مصر)</option>
+                    <option value="tr-TR">Türkçe</option>
+                    <option value="es-ES">Español</option>
+                    <option value="fr-FR">Français</option>
+                    <option value="de-DE">Deutsch</option>
+                    <option value="it-IT">Italiano</option>
+                    <option value="ru-RU">Русский</option>
+                    <option value="ja-JP">日本語</option>
+                    <option value="ko-KR">한국어</option>
+                    <option value="zh-CN">中文(简体)</option>
+                </select>
             </div>
-          </div>
-          <textarea
-            id="finalTextArea"
-            rows="8"
-            placeholder="متن تشخیص‌داده‌شده اینجا ظاهر می‌شود. می‌توانید مستقیم ویرایش کنید..."
-          ></textarea>
+            <div class="continuous-group">
+                <label>حالت ضبط</label>
+                <div class="checkbox-wrapper" id="continuousModeWrapper">
+                    <input type="checkbox" id="proContinuous" checked> 
+                    <span><i class="fas fa-infinity"></i> پیوسته (بدون قطع)</span>
+                </div>
+            </div>
         </div>
 
-        <!-- ناحیه متن موقت (حین صحبت) -->
-        <div class="interim-box" id="interimBox">
-          <div class="interim-label">
-            <i class="fas fa-waveform"></i> متن لحظه‌ای (در حال تشخیص):
-          </div>
-          <div id="interimText" style="margin-top: 6px">—</div>
+        <!-- استودیو ضبط -->
+        <div class="mic-studio">
+            <div class="status-pill" id="proStatusBadge">
+                <i class="fas fa-microphone-slash"></i> <span id="statusMsg">آماده</span>
+            </div>
+            <div class="timer-pro" id="recordTimer">00:00</div>
+            <div class="vu-metro">
+                <canvas id="waveCanvas" width="300" height="48" style="width:100%; height:48px"></canvas>
+            </div>
         </div>
-        <div class="info-tip">
-          <i class="fas fa-info-circle"></i> بر پایه سرویس Google Speech-to-Text
-          · برای ویرایش مستقیم روی متن کلیک و تایپ کنید · ضبط پیوسته تا کلیک
-          توقف ادامه دارد
+
+        <div class="action-buttons-pro">
+            <button id="proStartBtn" class="btn-pro btn-primary-pro"><i class="fas fa-play"></i> شروع ضبط حرفه‌ای</button>
+            <button id="proStopBtn" class="btn-pro btn-outline-pro" disabled><i class="fas fa-stop"></i> توقف ضبط</button>
         </div>
-      </div>
+
+        <!-- ناحیه متن اصلی (قابل ویرایش مستقیم) -->
+        <div class="text-master">
+            <div class="editor-header">
+                <span class="stats-badge" id="liveStats"><i class="fas fa-chart-line"></i> کلمات: 0 | کاراکتر: 0</span>
+                <div class="tool-icons">
+                    <button class="icon-btn-pro" id="copyFinalPro" title="کپی متن"><i class="fas fa-copy"></i></button>
+                    <button class="icon-btn-pro" id="downloadTxtPro" title="دانلود TXT"><i class="fas fa-file-alt"></i></button>
+                    <button class="icon-btn-pro" id="downloadDocPro" title="دانلود به صورت Word (DOC)"><i class="fas fa-file-word"></i></button>
+                    <button class="icon-btn-pro" id="clearFinalPro" title="پاک کردن متن"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            </div>
+            <textarea id="proFinalText" rows="9" placeholder="متن تشخیص داده شده اینجا ظاهر می‌شود ... می‌توانید مستقیماً ویرایش، کپی یا حذف کنید."></textarea>
+        </div>
+
+        <!-- متن موقت اینتریم -->
+        <div class="interim-live" id="interimLiveBox">
+            <i class="fas fa-waveform"></i> <strong>تشخیص لحظه‌ای:</strong> <span id="interimTextSpan">—</span>
+        </div>
+        <div class="info-footer">
+            <span><i class="fas fa-check-circle"></i> مبتنی بر Web Speech API (Google Cloud)</span>
+            <span><i class="fas fa-edit"></i> ویرایش مستقیم متن در کادر</span>
+            <span><i class="fas fa-save"></i> ذخیره خودکار در مرورگر</span>
+        </div>
     </div>
-    <div id="toastMsg" class="toast-msg"></div>
+</div>
+<div id="eliteToast" class="toast-elite"></div>
 
-    <script>
-      (function () {
-        // ----------------------------------- DOM elements
-        const startBtn = document.getElementById("startRecordBtn");
-        const stopBtn = document.getElementById("stopRecordBtn");
-        const langSelect = document.getElementById("languageSelect");
-        const continuousCheck = document.getElementById("continuousMode");
-        const finalTextArea = document.getElementById("finalTextArea");
-        const interimDiv = document.getElementById("interimText");
-        const statusChip = document.getElementById("statusChip");
-        const statusSpan = document.getElementById("statusText");
-        const statsSpan = document.getElementById("statsPanel");
-        const copyBtn = document.getElementById("copyFinalBtn");
-        const downloadBtn = document.getElementById("downloadTxtBtn");
-        const clearBtn = document.getElementById("clearFinalBtn");
-        const themeToggle = document.getElementById("themeToggle");
+<script>
+    (function(){
+        // DOM elements
+        const startBtn = document.getElementById('proStartBtn');
+        const stopBtn = document.getElementById('proStopBtn');
+        const langSelect = document.getElementById('proLangSelect');
+        const continuousCheck = document.getElementById('proContinuous');
+        const finalTextArea = document.getElementById('proFinalText');
+        const interimSpan = document.getElementById('interimTextSpan');
+        const statusBadge = document.getElementById('proStatusBadge');
+        const statusMsgSpan = document.getElementById('statusMsg');
+        const statsSpan = document.getElementById('liveStats');
+        const copyBtn = document.getElementById('copyFinalPro');
+        const downloadTxt = document.getElementById('downloadTxtPro');
+        const downloadDoc = document.getElementById('downloadDocPro');
+        const clearBtn = document.getElementById('clearFinalPro');
+        const timerElement = document.getElementById('recordTimer');
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        const waveCanvas = document.getElementById('waveCanvas');
+        const ctx = waveCanvas.getContext('2d');
 
-        // canvas VU
-        const canvas = document.getElementById("vuCanvas");
-        const ctx = canvas.getContext("2d");
-
-        // variables
+        // variables state
         let recognition = null;
         let isRecording = false;
         let mediaStream = null;
         let audioContext = null;
-        let sourceNode = null;
-        let analyser = null;
+        let analyserNode = null;
         let animationId = null;
-        let finalTextBuffer = ""; // همگام با textarea نگهداری می‌شود ولی برای اضافه کردن متن نهایی
-        let interimBuffer = "";
+        let recordStartTime = 0;
+        let timerInterval = null;
+        let finalTextBuffer = "";
 
-        // helper: نمایش توست
-        function showToast(msg, isError = false) {
-          const toast = document.getElementById("toastMsg");
-          toast.textContent = msg;
-          toast.classList.add("show");
-          toast.style.background = isError ? "#dc3545" : "#2b7a4b";
-          setTimeout(() => toast.classList.remove("show"), 2800);
+        // تابع نمایش توست حرفه‌ای
+        function showEliteToast(msg, isError = false) {
+            const toast = document.getElementById('eliteToast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            toast.style.background = isError ? '#e53e3e' : '#1e293b';
+            setTimeout(() => toast.classList.remove('show'), 2700);
         }
 
-        // به روز رسانی آمار
-        function updateStats() {
-          const text = finalTextArea.value;
-          const words = text
-            .trim()
-            .split(/\s+/)
-            .filter((w) => w.length > 0).length;
-          const chars = text.length;
-          statsSpan.innerHTML = `<i class="fas fa-chart-simple"></i> کلمات: ${words.toLocaleString("fa-IR")} | کاراکترها: ${chars.toLocaleString("fa-IR")}`;
-          // ذخیره خودکار در localStorage
-          try {
-            localStorage.setItem("speechToText_backup", text);
-          } catch (e) {}
+        // آمار کلمات و کاراکتر
+        function updateStatsFromText() {
+            const text = finalTextArea.value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const chars = text.length;
+            statsSpan.innerHTML = `<i class="fas fa-chart-line"></i> کلمات: ${words.toLocaleString('fa-IR')} | کاراکتر: ${chars.toLocaleString('fa-IR')}`;
+            localStorage.setItem('dictation_pro_backup', text);
         }
 
-        // ذخیره متن فعلی هنگام ویرایش دستی
-        finalTextArea.addEventListener("input", () => {
-          updateStats();
-          finalTextBuffer = finalTextArea.value;
+        finalTextArea.addEventListener('input', () => {
+            updateStatsFromText();
+            finalTextBuffer = finalTextArea.value;
         });
 
-        // بازیابی خودکار از localStorage
-        function loadBackup() {
-          const saved = localStorage.getItem("speechToText_backup");
-          if (saved && saved.trim().length > 0) {
-            if (confirm("متن ذخیره شده قبلی یافت شد. بازیابی شود؟")) {
-              finalTextArea.value = saved;
-              finalTextBuffer = saved;
-              updateStats();
-              showToast("متن قبلی بازیابی شد", false);
-            } else {
-              localStorage.removeItem("speechToText_backup");
+        // بارگذاری پشتیبان محلی
+        function loadBackupSafely() {
+            const saved = localStorage.getItem('dictation_pro_backup');
+            if(saved && saved.trim().length > 0) {
+                if(confirm('متن قبلی در حافظه مرورگر وجود دارد. بازیابی شود؟')) {
+                    finalTextArea.value = saved;
+                    finalTextBuffer = saved;
+                    updateStatsFromText();
+                    showEliteToast('متن قبلی بازیابی شد', false);
+                } else {
+                    localStorage.removeItem('dictation_pro_backup');
+                }
             }
-          }
         }
 
-        // افزودن متن نهایی جدید (هنگام تکمیل هر عبارت)
-        function addFinalTranscript(newText) {
-          if (!newText.trim()) return;
-          let current = finalTextArea.value;
-          let space =
-            current.length > 0 &&
-            !current.endsWith(" ") &&
-            !current.endsWith("\n")
-              ? " "
-              : "";
-          let updated = current + space + newText.trim();
-          finalTextArea.value = updated;
-          finalTextBuffer = updated;
-          updateStats();
-          // اسکرول خودکار
-          finalTextArea.scrollTop = finalTextArea.scrollHeight;
+        // افزودن متن نهایی (تشخیص قطعی)
+        function addFinalSegment(newText) {
+            if(!newText.trim()) return;
+            let current = finalTextArea.value;
+            let space = (current.length > 0 && !current.endsWith(' ') && !current.endsWith('\n')) ? ' ' : '';
+            let updated = current + space + newText.trim();
+            finalTextArea.value = updated;
+            finalTextBuffer = updated;
+            updateStatsFromText();
+            finalTextArea.scrollTop = finalTextArea.scrollHeight;
         }
 
-        // =============== VU Meter با canvas زیبا ===============
-        async function initVUMeter(stream) {
-          if (audioContext) await audioContext.close();
-          audioContext = new (
-            window.AudioContext || window.webkitAudioContext
-          )();
-          analyser = audioContext.createAnalyser();
-          analyser.fftSize = 256;
-          sourceNode = audioContext.createMediaStreamSource(stream);
-          sourceNode.connect(analyser);
-          const dataArray = new Uint8Array(analyser.frequencyBinCount);
-          function drawVU() {
-            if (!isRecording || !analyser) {
-              if (animationId) cancelAnimationFrame(animationId);
-              return;
+        // ---------- VU meter پیشرفته با موج گرافیکی
+        async function startVUAnalysis(stream) {
+            if(audioContext) await audioContext.close();
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyserNode = audioContext.createAnalyser();
+            analyserNode.fftSize = 256;
+            const source = audioContext.createMediaStreamSource(stream);
+            source.connect(analyserNode);
+            const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+            function drawWave() {
+                if(!isRecording || !analyserNode) {
+                    if(animationId) cancelAnimationFrame(animationId);
+                    return;
+                }
+                analyserNode.getByteFrequencyData(dataArray);
+                let maxLevel = 0;
+                for(let i=0;i<dataArray.length;i++) maxLevel = Math.max(maxLevel, dataArray[i]);
+                let percent = Math.min(100, (maxLevel / 255) * 100);
+                if(ctx && waveCanvas) {
+                    const w = waveCanvas.clientWidth;
+                    const h = waveCanvas.clientHeight;
+                    waveCanvas.width = w;
+                    waveCanvas.height = h;
+                    ctx.clearRect(0, 0, w, h);
+                    ctx.fillStyle = '#2c7a4d';
+                    let activeWidth = (percent / 100) * w;
+                    ctx.fillRect(0, 0, activeWidth, h);
+                    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                    ctx.fillRect(activeWidth, 0, w - activeWidth, h);
+                    if(percent > 70) ctx.fillStyle = '#f6ad55';
+                    ctx.fillRect(0, 0, activeWidth, h);
+                }
+                animationId = requestAnimationFrame(drawWave);
             }
-            analyser.getByteFrequencyData(dataArray);
-            let maxLevel = 0;
-            for (let i = 0; i < dataArray.length; i++) {
-              if (dataArray[i] > maxLevel) maxLevel = dataArray[i];
-            }
-            let percent = Math.min(100, (maxLevel / 255) * 100);
-            if (canvas && ctx) {
-              const w = canvas.clientWidth;
-              const h = canvas.clientHeight;
-              canvas.width = w;
-              canvas.height = h;
-              ctx.clearRect(0, 0, w, h);
-              ctx.fillStyle = "#2b7a4b";
-              let barWidth = Math.max(4, w * 0.02);
-              let activeWidth = (percent / 100) * w;
-              ctx.fillRect(0, 0, activeWidth, h);
-              ctx.fillStyle = "rgba(0,0,0,0.2)";
-              ctx.fillRect(activeWidth, 0, w - activeWidth, h);
-              if (percent > 70) ctx.fillStyle = "#f0ad4e";
-              ctx.fillRect(0, 0, activeWidth, h);
-            }
-            animationId = requestAnimationFrame(drawVU);
-          }
-          drawVU();
-          await audioContext.resume();
+            drawWave();
+            await audioContext.resume();
         }
 
-        function stopVUMeter() {
-          if (animationId) cancelAnimationFrame(animationId);
-          if (audioContext) {
-            audioContext.close().catch((e) => console.warn);
-            audioContext = null;
-          }
-          if (ctx && canvas) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-          }
+        function stopVUAndStream() {
+            if(animationId) cancelAnimationFrame(animationId);
+            if(audioContext) {
+                audioContext.close().catch(e=>console.warn);
+                audioContext = null;
+            }
+            if(ctx && waveCanvas) {
+                ctx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+            }
         }
 
-        // توقف کامل ضبط و آزادسازی
-        function haltRecording() {
-          if (recognition) {
-            try {
-              recognition.abort();
-            } catch (e) {}
-            recognition = null;
-          }
-          if (mediaStream) {
-            mediaStream.getTracks().forEach((track) => track.stop());
-            mediaStream = null;
-          }
-          stopVUMeter();
-          isRecording = false;
-          startBtn.disabled = false;
-          stopBtn.disabled = true;
-          statusChip.classList.remove("recording-active");
-          statusSpan.innerHTML = "آماده";
-          statusChip.querySelector("i").className = "fas fa-microphone-slash";
-          interimDiv.innerHTML = "—";
-          interimBuffer = "";
+        // تایمر ضبط
+        function startTimer() {
+            recordStartTime = Date.now();
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if(!isRecording) return;
+                const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
+                const mins = Math.floor(elapsed / 60);
+                const secs = elapsed % 60;
+                timerElement.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+            }, 1000);
+        }
+        function stopTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            timerElement.textContent = "00:00";
         }
 
-        // مقداردهی recognition
-        function createRecognition() {
-          const SpeechRecog =
-            window.SpeechRecognition || window.webkitSpeechRecognition;
-          if (!SpeechRecog) {
-            showToast(
-              "مرورگر شما پشتیبانی نمی‌کند. از Chrome / Edge / Safari استفاده کنید.",
-              true,
-            );
-            return null;
-          }
-          const recog = new SpeechRecog();
-          recog.continuous = continuousCheck.checked;
-          recog.interimResults = true;
-          recog.lang = langSelect.value;
-          recog.maxAlternatives = 1;
-
-          recog.onstart = () => {
-            isRecording = true;
-            startBtn.disabled = true;
-            stopBtn.disabled = false;
-            statusSpan.innerHTML = "در حال ضبط (گوگل) ...";
-            statusChip.classList.add("recording-active");
-            statusChip.querySelector("i").className = "fas fa-microphone";
-            if (mediaStream) initVUMeter(mediaStream);
-          };
-
-          recog.onend = () => {
-            if (isRecording && continuousCheck.checked) {
-              // restart if continuous and still logically recording
-              try {
-                if (recognition) recognition.start();
-              } catch (e) {
-                console.warn(e);
-                haltRecording();
-              }
-            } else {
-              haltRecording();
+        // توقف کامل ضبط
+        function haltRecordingSession() {
+            if(recognition) {
+                try { recognition.abort(); } catch(e) {}
+                recognition = null;
             }
-          };
+            if(mediaStream) {
+                mediaStream.getTracks().forEach(t => t.stop());
+                mediaStream = null;
+            }
+            stopVUAndStream();
+            isRecording = false;
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            statusBadge.classList.remove('recording');
+            statusMsgSpan.innerHTML = 'آماده';
+            statusBadge.querySelector('i').className = 'fas fa-microphone-slash';
+            interimSpan.innerHTML = '—';
+            stopTimer();
+        }
 
-          recog.onresult = (event) => {
-            let finalPart = "";
-            let interimPart = "";
-            for (let i = event.resultIndex; i < event.results.length; i++) {
-              const transcript = event.results[i][0].transcript;
-              if (event.results[i].isFinal) {
-                finalPart += transcript + " ";
-              } else {
-                interimPart += transcript;
-              }
+        // ساخت شیء تشخیص گفتار گوگل
+        function buildSpeechRecognition() {
+            const SpeechRecog = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!SpeechRecog) {
+                showEliteToast('مرورگر شما پشتیبانی نمی‌کند. از Chrome، Edge یا Safari استفاده کنید.', true);
+                return null;
             }
-            if (finalPart.trim().length > 0) {
-              addFinalTranscript(finalPart.trim());
-            }
-            if (interimPart) {
-              interimBuffer = interimPart;
-              interimDiv.innerHTML =
-                interimPart +
-                ' <span style="opacity:0.6;">(در حال تشخیص...)</span>';
-            } else if (!finalPart && interimPart === "") {
-              interimDiv.innerHTML = "—";
-            } else if (finalPart && interimPart === "") {
-              interimDiv.innerHTML = "—";
-            }
-          };
+            const recog = new SpeechRecog();
+            recog.continuous = continuousCheck.checked;
+            recog.interimResults = true;
+            recog.lang = langSelect.value;
 
-          recog.onerror = (event) => {
-            console.error(event.error);
-            let errorMsg = "";
-            if (event.error === "not-allowed")
-              errorMsg = "دسترسی به میکروفون داده نشد. مجوز را بررسی کنید.";
-            else if (event.error === "network")
-              errorMsg = "خطای شبکه - اتصال به اینترنت لازم است.";
-            else if (event.error === "no-speech")
-              errorMsg = "صدایی شناسایی نشد.";
-            else errorMsg = `خطا: ${event.error}`;
-            showToast(errorMsg, true);
-            haltRecording();
-          };
-          return recog;
+            recog.onstart = () => {
+                isRecording = true;
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                statusBadge.classList.add('recording');
+                statusMsgSpan.innerHTML = 'در حال ضبط با موتور گوگل';
+                statusBadge.querySelector('i').className = 'fas fa-microphone';
+                if(mediaStream) startVUAnalysis(mediaStream);
+                startTimer();
+            };
+
+            recog.onend = () => {
+                if(isRecording && continuousCheck.checked) {
+                    try { if(recognition) recognition.start(); } catch(e) { haltRecordingSession(); }
+                } else {
+                    haltRecordingSession();
+                }
+            };
+
+            recog.onresult = (event) => {
+                let finalText = '';
+                let interimPart = '';
+                for(let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if(event.results[i].isFinal) {
+                        finalText += transcript + ' ';
+                    } else {
+                        interimPart += transcript;
+                    }
+                }
+                if(finalText.trim().length > 0) {
+                    addFinalSegment(finalText.trim());
+                }
+                if(interimPart) {
+                    interimSpan.innerHTML = interimPart + ' <span class="blink-cursor"></span>';
+                } else {
+                    interimSpan.innerHTML = '—';
+                }
+            };
+
+            recog.onerror = (errEvent) => {
+                let errorMsg = '';
+                if(errEvent.error === 'not-allowed') errorMsg = 'دسترسی به میکروفون داده نشد.';
+                else if(errEvent.error === 'network') errorMsg = 'خطای شبکه - اتصال اینترنت ضروری است.';
+                else if(errEvent.error === 'no-speech') errorMsg = 'صدایی تشخیص داده نشد.';
+                else errorMsg = `خطا: ${errEvent.error}`;
+                showEliteToast(errorMsg, true);
+                haltRecordingSession();
+            };
+            return recog;
         }
 
         // شروع ضبط
-        async function startRecording() {
-          if (isRecording) return;
-          // پاک کردن متن موقت
-          interimDiv.innerHTML = "—";
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-              audio: true,
-            });
-            mediaStream = stream;
-            recognition = createRecognition();
-            if (!recognition) {
-              if (mediaStream) mediaStream.getTracks().forEach((t) => t.stop());
-              return;
-            }
-            recognition.start();
-          } catch (err) {
-            console.error(err);
-            let msg = "خطا در دسترسی به میکروفون. لطفاً مجوز فعال باشد.";
-            if (err.name === "NotAllowedError")
-              msg = "دسترسی به میکروفون رد شد.";
-            else if (err.name === "NotFoundError") msg = "میکروفونی یافت نشد.";
-            showToast(msg, true);
-            startBtn.disabled = false;
-          }
-        }
-
-        // توقف ضبط
-        function stopRecording() {
-          if (recognition) {
+        async function startProRecording() {
+            if(isRecording) return;
+            interimSpan.innerHTML = 'درخواست میکروفون...';
             try {
-              recognition.stop();
-            } catch (e) {}
-          }
-          haltRecording();
-          showToast("ضبط متوقف شد. متن قابل ویرایش است.", false);
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaStream = stream;
+                recognition = buildSpeechRecognition();
+                if(!recognition) {
+                    if(mediaStream) mediaStream.getTracks().forEach(t=>t.stop());
+                    return;
+                }
+                recognition.start();
+            } catch(err) {
+                let msg = 'میکروفون در دسترس نیست. مجوزها را بررسی کنید.';
+                if(err.name === 'NotAllowedError') msg = 'اجازه دسترسی به میکروفون داده نشد.';
+                showEliteToast(msg, true);
+                startBtn.disabled = false;
+            }
         }
 
-        // رویدادها
-        startBtn.addEventListener("click", startRecording);
-        stopBtn.addEventListener("click", stopRecording);
-
-        // تغییر زبان / حالت پیوسته در حین ضبط باعث بازآفرینی می‌شود
-        async function reconfigureIfNeeded() {
-          if (isRecording) {
-            stopRecording();
-            await new Promise((r) => setTimeout(r, 300));
-            startRecording();
-          } else if (recognition) {
-            // اگر در حال ضبط نبود ولی نمونه ساخته شده بود، فقط زبان را بروز کنیم
-            if (recognition) recognition.lang = langSelect.value;
-          }
+        function stopProRecording() {
+            if(recognition) {
+                try { recognition.stop(); } catch(e){}
+            }
+            haltRecordingSession();
+            showEliteToast('ضبط متوقف شد. متن قابل ویرایش است.', false);
         }
-        langSelect.addEventListener("change", reconfigureIfNeeded);
-        continuousCheck.addEventListener("change", () => {
-          if (isRecording) {
-            stopRecording();
-            setTimeout(() => startRecording(), 200);
-          }
-        });
 
-        // copy, download, clear
-        copyBtn.addEventListener("click", () => {
-          const txt = finalTextArea.value;
-          if (!txt.trim()) return showToast("متنی برای کپی وجود ندارد", false);
-          navigator.clipboard
-            .writeText(txt)
-            .then(() => showToast("✅ متن در کلیپبورد کپی شد"));
-        });
-        downloadBtn.addEventListener("click", () => {
-          const txt = finalTextArea.value;
-          if (!txt.trim()) return showToast("متنی برای دانلود وجود ندارد");
-          const blob = new Blob([txt], { type: "text/plain" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `speech_text_${new Date().toISOString().slice(0, 19)}.txt`;
-          a.click();
-          URL.revokeObjectURL(url);
-          showToast("فایل TXT دانلود شد");
-        });
-        clearBtn.addEventListener("click", () => {
-          if (confirm("تمام متن پاک می‌شود. ادامه می‌دهید؟")) {
-            finalTextArea.value = "";
-            finalTextBuffer = "";
-            updateStats();
-            showToast("متن پاک شد");
-          }
-        });
+        // رخداد دکمه‌ها
+        startBtn.addEventListener('click', startProRecording);
+        stopBtn.addEventListener('click', stopProRecording);
 
-        // theme toggle (dark/light)
-        function applyTheme(theme) {
-          if (theme === "dark") document.body.classList.add("dark");
-          else document.body.classList.remove("dark");
-          localStorage.setItem("theme_pref", theme);
-          const btnSpan = themeToggle.querySelector("span");
-          if (theme === "dark") {
-            themeToggle.innerHTML =
-              '<i class="fas fa-sun"></i><span>تم روشن</span>';
-          } else {
-            themeToggle.innerHTML =
-              '<i class="fas fa-moon"></i><span>تم تاریک</span>';
-          }
+        // تغییر زبان / حالت پیوسته
+        async function reconfigIfNeeded() {
+            if(isRecording) {
+                stopProRecording();
+                await new Promise(r => setTimeout(r, 280));
+                startProRecording();
+            } else if(recognition) {
+                recognition.lang = langSelect.value;
+            }
         }
-        const savedTheme = localStorage.getItem("theme_pref");
-        if (savedTheme === "dark") applyTheme("dark");
-        else applyTheme("light");
-        themeToggle.addEventListener("click", () => {
-          const isDark = document.body.classList.contains("dark");
-          applyTheme(isDark ? "light" : "dark");
+        langSelect.addEventListener('change', reconfigIfNeeded);
+        continuousCheck.addEventListener('change', () => {
+            if(isRecording) {
+                stopProRecording();
+                setTimeout(() => startProRecording(), 200);
+            }
         });
 
-        // پشتیبانی اولیه از Web Speech API
-        if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-          startBtn.disabled = true;
-          showToast(
-            "مرورگر شما پشتیبانی نمی‌کند. لطفاً Chrome / Edge / Safari جدید استفاده کنید.",
-            true,
-          );
-          document.querySelector(".info-tip").innerHTML =
-            '<i class="fas fa-exclamation-triangle"></i> مرورگر نا‌هماهنگ: از Chrome، Edge یا Safari استفاده نمایید.';
+        // کپی، دانلود TXT، دانلود Word (با محتوای HTML ساده)
+        copyBtn.addEventListener('click', () => {
+            const txt = finalTextArea.value;
+            if(!txt.trim()) return showEliteToast('متن موجود نیست');
+            navigator.clipboard.writeText(txt).then(() => showEliteToast('متن کپی شد 📋'));
+        });
+        downloadTxt.addEventListener('click', () => {
+            const txt = finalTextArea.value;
+            if(!txt.trim()) return showEliteToast('متنی برای دانلود وجود ندارد');
+            const blob = new Blob([txt], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `speech_transcript_${new Date().toISOString().slice(0,19)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showEliteToast('فایل TXT دانلود شد');
+        });
+        downloadDoc.addEventListener('click', () => {
+            const txt = finalTextArea.value;
+            if(!txt.trim()) return showEliteToast('متنی برای خروجی Word وجود ندارد');
+            const htmlContent = `<!DOCTYPE html><html><meta charset="UTF-8"><title>گفتار به متن</title><body style="font-family:Vazir, sans-serif; padding:2rem;"><pre style="white-space:pre-wrap">${txt}</pre></body></html>`;
+            const blob = new Blob([htmlContent], {type: 'application/msword'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dictation_output.doc`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showEliteToast('فایل Word (doc) ذخیره شد');
+        });
+        clearBtn.addEventListener('click', () => {
+            if(confirm('تمام متن پاک می‌شود. ادامه می‌دهید؟')) {
+                finalTextArea.value = '';
+                finalTextBuffer = '';
+                updateStatsFromText();
+                showEliteToast('متن با موفقیت پاک شد');
+            }
+        });
+
+        // تم تاریک/روشن
+        function setTheme(theme) {
+            if(theme === 'dark') document.body.classList.add('dark');
+            else document.body.classList.remove('dark');
+            localStorage.setItem('dictation_theme', theme);
+            const icon = themeSwitcher.querySelector('i');
+            const span = themeSwitcher.querySelector('span');
+            if(theme === 'dark') {
+                icon.className = 'fas fa-sun';
+                span.innerText = 'تم روشن';
+            } else {
+                icon.className = 'fas fa-moon';
+                span.innerText = 'تم شب';
+            }
+        }
+        const savedTheme = localStorage.getItem('dictation_theme');
+        if(savedTheme === 'dark') setTheme('dark');
+        else setTheme('light');
+        themeSwitcher.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+        });
+
+        // بررسی پشتیبانی مرورگر
+        if(!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+            startBtn.disabled = true;
+            showEliteToast('مرورگر شما از API تشخیص گفتار پشتیبانی نمی‌کند.', true);
+            document.querySelector('.info-footer').innerHTML = '<span>⚠️ لطفاً از Chrome، Edge یا Safari جدید استفاده کنید.</span>';
         } else {
-          startBtn.disabled = false;
-          loadBackup();
-          updateStats();
+            startBtn.disabled = false;
+            loadBackupSafely();
+            updateStatsFromText();
         }
-        // در صورت بسته شدن صفحه یکبار پشتیبان
-        window.addEventListener("beforeunload", () => {
-          if (finalTextArea.value.trim())
-            localStorage.setItem("speechToText_backup", finalTextArea.value);
+
+        window.addEventListener('beforeunload', () => {
+            if(finalTextArea.value.trim()) localStorage.setItem('dictation_pro_backup', finalTextArea.value);
         });
-      })();
-    </script>
-  </body>
+    })();
+</script>
+</body>
 </html>
