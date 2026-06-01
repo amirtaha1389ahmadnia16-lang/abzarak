@@ -1,1 +1,123 @@
+﻿<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تبدیل صدا به متن پیشرفته | ابزارک</title>
+    <link rel="stylesheet" href="/assets/css/core.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="global-header"></div>
 
+    <main class="container" style="padding: 2rem 0">
+      <h1><i class="fas fa-microphone-alt"></i> تبدیل صدا به متن پیشرفته</h1>
+      <p style="margin-bottom: 1.5rem">
+        صحبت کن، متن تشخیص‌داده‌شده را ببین، کپی کن یا دانلود کن. (نیاز به
+        اینترنت، مرورگر Chrome/Edge/Safari)
+      </p>
+
+      <div class="tool-panel">
+        <!-- تنظیمات زبان -->
+        <div class="settings-bar">
+          <div class="lang-select">
+            <label><i class="fas fa-language"></i> زبان گفتار:</label>
+            <select id="langSelect">
+              <option value="fa-IR">فارسی (ایران)</option>
+              <option value="en-US">انگلیسی (آمریکا)</option>
+              <option value="en-GB">انگلیسی (بریتانیا)</option>
+              <option value="ar-EG">عربی (مصر)</option>
+              <option value="tr-TR">ترکی استانبولی</option>
+              <option value="es-ES">اسپانیایی</option>
+              <option value="fr-FR">فرانسوی</option>
+              <option value="de-DE">آلمانی</option>
+              <option value="it-IT">ایتالیایی</option>
+              <option value="ru-RU">روسی</option>
+              <option value="ja-JP">ژاپنی</option>
+              <option value="ko-KR">کره‌ای</option>
+              <option value="zh-CN">چینی (ساده‌شده)</option>
+            </select>
+          </div>
+          <div class="continuous-opt">
+            <label
+              ><input type="checkbox" id="continuousCheck" checked /> ضبط پیوسته
+              (تا کلیک روی توقف)</label
+            >
+          </div>
+        </div>
+
+        <!-- وضعیت میکروفون و VU متر ساده -->
+        <div class="mic-status">
+          <div class="status-badge" id="statusBadge">
+            <i class="fas fa-microphone-slash"></i> آماده
+          </div>
+          <div class="vu-meter" id="vuMeter">
+            <div class="vu-fill" id="vuFill"></div>
+          </div>
+        </div>
+
+        <!-- دکمه‌های ضبط -->
+        <div class="record-controls">
+          <button id="recordBtn" class="btn record-btn" disabled>
+            <i class="fas fa-microphone"></i> شروع ضبط
+          </button>
+          <button id="stopBtn" class="btn btn--outline" disabled>
+            <i class="fas fa-stop"></i> توقف
+          </button>
+        </div>
+
+        <!-- خروجی متن -->
+        <div class="output-area">
+          <div class="toolbar">
+            <span class="stats" id="stats">کلمات: 0 | کاراکترها: 0</span>
+            <div class="action-buttons">
+              <button
+                id="copyBtn"
+                class="btn btn--small btn--outline"
+                title="کپی متن"
+              >
+                <i class="fas fa-copy"></i> کپی
+              </button>
+              <button
+                id="downloadBtn"
+                class="btn btn--small btn--outline"
+                title="دانلود متن"
+              >
+                <i class="fas fa-download"></i> دانلود TXT
+              </button>
+              <button
+                id="clearBtn"
+                class="btn btn--small btn--outline"
+                title="پاک کردن"
+              >
+                <i class="fas fa-trash-alt"></i> پاک
+              </button>
+            </div>
+          </div>
+          <textarea
+            id="outputText"
+            rows="10"
+            placeholder="متن تشخیص داده شده اینجا ظاهر می‌شود..."
+            readonly
+          ></textarea>
+        </div>
+
+        <!-- پیام راهنما و خطا -->
+        <div class="info-message" id="infoMsg">
+          <i class="fas fa-info-circle"></i> برای شروع روی «شروع ضبط» کلیک کنید
+          و اجازه دسترسی به میکروفون را بدهید.
+        </div>
+      </div>
+    </main>
+
+    <div id="toast" class="toast"></div>
+    <div id="global-footer"></div>
+
+    <script src="/assets/js/app.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
