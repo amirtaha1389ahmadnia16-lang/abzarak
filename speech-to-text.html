@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>دیکته صوتی + بازخوانی | ابزارک</title>
+    <title>دیکته صوتی + افکت تایپ | ابزارک</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -59,6 +59,14 @@
             font-size: 1rem; line-height: 1.6; white-space: pre-wrap;
             word-wrap: break-word; font-family: 'Vazirmatn', monospace;
         }
+        .typewriter-box {
+            background: #fefefe; border: 2px solid #3b82f6; border-radius: 1rem;
+            padding: 1.2rem; min-height: 250px; margin: 1rem 0;
+            font-size: 1rem; line-height: 1.6; white-space: pre-wrap;
+            word-wrap: break-word; font-family: 'Vazirmatn', monospace;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+            transition: all 0.2s;
+        }
         .btn-group {
             display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1rem;
         }
@@ -67,6 +75,11 @@
             border-radius: 2rem; font-weight: 500; cursor: pointer;
         }
         .btn-secondary:hover { background: #cbd5e1; }
+        .btn-primary {
+            background: #3b82f6; color: white; border: none;
+            padding: 0.5rem 1rem; border-radius: 2rem; font-weight: 500; cursor: pointer;
+        }
+        .btn-primary:hover { background: #2563eb; }
         .wave-animation i { animation: pulse 1s infinite; }
         @keyframes pulse {
             0% { opacity: 0.3; transform: scale(0.9);}
@@ -102,27 +115,26 @@
             <button id="requestPermissionBtn" class="microphone-btn"><i class="fas fa-microphone"></i> درخواست دسترسی میکروفون</button>
             <div id="recordingControls" style="display: none; margin-top: 1rem;">
                 <button id="startRecordBtn" class="microphone-btn"><i class="fas fa-play"></i> شروع ضبط</button>
-                <button id="stopRecordBtn" class="microphone-btn stop-btn" disabled><i class="fas fa-stop"></i> توقف</button>
+                <button id="stopRecordBtn" class="microphone-btn stop-btn" disabled><i class="fas fa-stop"></i> توقف و نمایش با افکت</button>
             </div>
             <div id="waveStatus" class="status-wave" style="display: none;">
-                <i class="fas fa-microphone-alt wave-animation"></i> در حال ضبط... صدای شما به متن تبدیل می‌شود.
+                <i class="fas fa-microphone-alt wave-animation"></i> در حال ضبط... صحبت کنید. بعد از توقف، متن با افکت تایپ می‌شود.
             </div>
         </div>
 
-        <!-- بخش نمایش متن و عملیات -->
+        <!-- بخش نمایش متن با افکت تایپ -->
         <div class="card">
-            <h2><i class="fas fa-file-alt"></i> متن تشخیص داده شده</h2>
-            <div id="resultText" class="result-box" contenteditable="true">(نتیجه گفتار اینجا ظاهر می‌شود...)</div>
+            <h2><i class="fas fa-typewriter"></i> متن نهایی با افکت تایپ</h2>
+            <div id="typewriterBox" class="typewriter-box">(متن پس از توقف ضبط اینجا تایپ می‌شود...)</div>
             <div class="btn-group">
                 <button id="copyTextBtn" class="btn-secondary"><i class="fas fa-copy"></i> کپی متن</button>
                 <button id="downloadTxtBtn" class="btn-secondary"><i class="fas fa-download"></i> دانلود TXT</button>
                 <button id="clearTextBtn" class="btn-secondary"><i class="fas fa-trash-alt"></i> پاک کردن متن</button>
-                <button id="readTextBtn" class="btn-secondary"><i class="fas fa-volume-up"></i> 🔊 بازخوانی متن</button>
-                <button id="saveLocalBtn" class="btn-secondary"><i class="fas fa-save"></i> ذخیره موقت</button>
-                <button id="loadLocalBtn" class="btn-secondary"><i class="fas fa-undo-alt"></i> بازیابی آخرین</button>
+                <button id="replayTypeBtn" class="btn-primary"><i class="fas fa-redo-alt"></i> نمایش مجدد با افکت</button>
+                <button id="readTextBtn" class="btn-secondary"><i class="fas fa-volume-up"></i> بازخوانی صوتی</button>
             </div>
             <p style="font-size: 0.75rem; margin-top: 0.8rem; color: #475569;">
-                <i class="fas fa-info-circle"></i> متن قابل ویرایش است. بعد از نوشتن متن، روی «بازخوانی متن» کلیک کنید تا صدای آن را بشنوید.
+                <i class="fas fa-info-circle"></i> ابتدا ضبط کنید، سپس با زدن دکمه توقف، متن با افکت تایپ نوشته می‌شود.
             </p>
         </div>
     </div>
@@ -137,13 +149,12 @@
         const recordingDiv = document.getElementById('recordingControls');
         const startBtn = document.getElementById('startRecordBtn');
         const stopBtn = document.getElementById('stopRecordBtn');
-        const resultDiv = document.getElementById('resultText');
+        const typewriterBox = document.getElementById('typewriterBox');
         const copyBtn = document.getElementById('copyTextBtn');
         const downloadBtn = document.getElementById('downloadTxtBtn');
         const clearBtn = document.getElementById('clearTextBtn');
+        const replayTypeBtn = document.getElementById('replayTypeBtn');
         const readTextBtn = document.getElementById('readTextBtn');
-        const saveLocalBtn = document.getElementById('saveLocalBtn');
-        const loadLocalBtn = document.getElementById('loadLocalBtn');
         const languageSelect = document.getElementById('languageSelect');
         const waveStatus = document.getElementById('waveStatus');
 
@@ -151,7 +162,8 @@
         let isListening = false;
         let mediaStream = null;
         let currentLang = 'fa-IR';
-        let lastAddedText = '';  // برای جلوگیری از تکرار متن
+        let finalText = '';          // متن نهایی جمع‌آوری شده (بدون تکرار)
+        let typewriterInterval = null;
 
         // پشتیبانی از SpeechRecognition
         const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -160,51 +172,6 @@
             requestBtn.disabled = true;
             return;
         }
-
-        // ---------- ذخیره و بازیابی محلی ----------
-        const STORAGE_KEY = 'speechToText_backup';
-        function saveToLocal() {
-            const text = resultDiv.innerText;
-            if (text && text !== '(نتیجه گفتار اینجا ظاهر می‌شود...)') {
-                localStorage.setItem(STORAGE_KEY, text);
-                alert('متن ذخیره شد.');
-            } else alert('متن خالی است.');
-        }
-        function loadFromLocal() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                resultDiv.innerText = saved;
-                lastAddedText = saved;
-                alert('متن بازیابی شد.');
-            } else alert('هیچ متن ذخیره‌ای یافت نشد.');
-        }
-        saveLocalBtn.addEventListener('click', saveToLocal);
-        loadLocalBtn.addEventListener('click', loadFromLocal);
-
-        // ---------- بازخوانی متن (Text-to-Speech) ----------
-        function readTextAloud() {
-            let text = resultDiv.innerText;
-            if (!text || text === '(نتیجه گفتار اینجا ظاهر می‌شود...)') {
-                alert('هیچ متنی برای بازخوانی وجود ندارد.');
-                return;
-            }
-            // پشتیبانی از SpeechSynthesis
-            if (!window.speechSynthesis) {
-                alert('مرورگر شما از بازخوانی متن پشتیبانی نمی‌کند.');
-                return;
-            }
-            // لغو هر صدای در حال پخش
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            // تنظیم زبان بر اساس زبان انتخاب شده (فارسی یا انگلیسی)
-            let langCode = languageSelect.value;
-            utterance.lang = langCode;
-            // برای فارسی اگر صدای مناسب نبود، مرورگر خودش بهترین را انتخاب می‌کند
-            utterance.rate = 0.9;   // سرعت适中
-            utterance.pitch = 1;
-            window.speechSynthesis.speak(utterance);
-        }
-        readTextBtn.addEventListener('click', readTextAloud);
 
         // ---------- درخواست دسترسی میکروفون ----------
         async function requestMicrophone() {
@@ -228,7 +195,7 @@
             }
             recognition = new SpeechRecognitionAPI();
             recognition.continuous = true;
-            recognition.interimResults = true;
+            recognition.interimResults = false;   // فقط نتایج نهایی بگیریم تا از تکرار جلوگیری شود
             recognition.lang = currentLang;
             recognition.maxAlternatives = 1;
 
@@ -249,7 +216,7 @@
                     mediaStream.getTracks().forEach(t => t.stop());
                     mediaStream = null;
                 }
-                permissionStatus.innerHTML = '<i class="fas fa-stop-circle"></i> ضبط متوقف شد. برای ادامه دکمه شروع را بزنید.';
+                permissionStatus.innerHTML = '<i class="fas fa-stop-circle"></i> ضبط متوقف شد. برای ضبط مجدد دکمه شروع را بزنید.';
                 permissionStatus.style.background = '#f1f5f9';
             };
             recognition.onerror = (event) => {
@@ -270,19 +237,14 @@
                 }
             };
             recognition.onresult = (event) => {
-                let finalTranscript = '';
+                // فقط نتایج نهایی را گرفته و به finalText اضافه می‌کنیم (بدون تکرار)
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript + ' ';
-                    }
-                }
-                if (finalTranscript.trim() !== '') {
-                    let current = resultDiv.innerText;
-                    if (current === '(نتیجه گفتار اینجا ظاهر می‌شود...)') current = '';
-                    // جلوگیری از افزودن متن تکراری (رفع مشکل موبایل و تبلت)
-                    if (!current.endsWith(finalTranscript.trim())) {
-                        resultDiv.innerText = current + finalTranscript;
-                        lastAddedText = finalTranscript;
+                        let newPart = event.results[i][0].transcript + ' ';
+                        // جلوگیری از اضافه کردن تکراری (اگر آخرین متن دقیقاً همان است، نریز)
+                        if (!finalText.endsWith(newPart.trim())) {
+                            finalText += newPart;
+                        }
                     }
                 }
             };
@@ -294,6 +256,8 @@
                 return;
             }
             if (!isListening) {
+                finalText = '';   // شروع جدید، متن قبلی پاک می‌شود
+                typewriterBox.innerText = '';
                 const newLang = languageSelect.value;
                 if (newLang !== currentLang) {
                     currentLang = newLang;
@@ -302,13 +266,105 @@
                 recognition.start();
             }
         }
+
         function stopRecording() {
-            if (recognition && isListening) recognition.stop();
+            if (recognition && isListening) {
+                recognition.stop();
+                // بعد از توقف، افکت تایپ را اجرا کن
+                startTypewriterEffect(finalText);
+            }
         }
 
+        // ---------- افکت تایپ (نوشتن حرف به حرف یا کلمه به کلمه) ----------
+        function startTypewriterEffect(text) {
+            if (typewriterInterval) clearInterval(typewriterInterval);
+            typewriterBox.innerText = '';
+            if (!text.trim()) {
+                typewriterBox.innerText = '(متن تشخیص داده شده‌ای وجود ندارد)';
+                return;
+            }
+            let index = 0;
+            // برای پشتیبانی از فارسی/انگلیسی، کاراکتر به کاراکتر جلو می‌رویم
+            typewriterInterval = setInterval(() => {
+                if (index < text.length) {
+                    typewriterBox.innerText += text.charAt(index);
+                    index++;
+                    // اسکرول خودکار به پایین
+                    typewriterBox.scrollTop = typewriterBox.scrollHeight;
+                } else {
+                    clearInterval(typewriterInterval);
+                    typewriterInterval = null;
+                }
+            }, 40); // سرعت تایپ (میلی ثانیه)
+        }
+
+        // نمایش مجدد افکت روی متن فعلی (بدون تغییر متن)
+        function replayTypewriter() {
+            let currentText = typewriterBox.innerText;
+            if (currentText && currentText !== '(متن تشخیص داده شده‌ای وجود ندارد)') {
+                startTypewriterEffect(finalText);
+            } else if (finalText.trim()) {
+                startTypewriterEffect(finalText);
+            } else {
+                alert('هیچ متنی برای نمایش وجود ندارد. ابتدا ضبط کنید.');
+            }
+        }
+
+        // کپی متن (متن نهایی داخل باکس تایپ)
+        function copyText() {
+            let text = typewriterBox.innerText;
+            if (text && text !== '(متن تشخیص داده شده‌ای وجود ندارد)') {
+                navigator.clipboard.writeText(text);
+                alert('✅ متن کپی شد');
+            } else alert('متن موجود نیست');
+        }
+
+        function downloadText() {
+            let text = typewriterBox.innerText;
+            if (text && text !== '(متن تشخیص داده شده‌ای وجود ندارد)') {
+                const blob = new Blob([text], {type: 'text/plain'});
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'speech_to_text.txt';
+                a.click();
+                URL.revokeObjectURL(a.href);
+            } else alert('متن موجود نیست');
+        }
+
+        function clearText() {
+            if (typewriterInterval) clearInterval(typewriterInterval);
+            typewriterBox.innerText = '';
+            finalText = '';
+        }
+
+        function readTextAloud() {
+            let text = typewriterBox.innerText;
+            if (!text || text === '(متن تشخیص داده شده‌ای وجود ندارد)' || text === '') {
+                alert('هیچ متنی برای بازخوانی وجود ندارد.');
+                return;
+            }
+            if (!window.speechSynthesis) {
+                alert('مرورگر شما از بازخوانی متن پشتیبانی نمی‌کند.');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = languageSelect.value;
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // رویداد دکمه‌ها
         requestBtn.addEventListener('click', requestMicrophone);
         startBtn.addEventListener('click', startRecording);
         stopBtn.addEventListener('click', stopRecording);
+        copyBtn.addEventListener('click', copyText);
+        downloadBtn.addEventListener('click', downloadText);
+        clearBtn.addEventListener('click', clearText);
+        replayTypeBtn.addEventListener('click', replayTypewriter);
+        readTextBtn.addEventListener('click', readTextAloud);
+
         languageSelect.addEventListener('change', () => {
             if (recognition && !isListening) {
                 currentLang = languageSelect.value;
@@ -318,31 +374,6 @@
                 alert('لطفاً ابتدا ضبط را متوقف کنید، سپس زبان را تغییر دهید.');
                 languageSelect.value = currentLang;
             }
-        });
-
-        copyBtn.addEventListener('click', () => {
-            const text = resultDiv.innerText;
-            if (text && text !== '(نتیجه گفتار اینجا ظاهر می‌شود...)') {
-                navigator.clipboard.writeText(text);
-                alert('✅ متن کپی شد');
-            } else alert('متن موجود نیست');
-        });
-        downloadBtn.addEventListener('click', () => {
-            const text = resultDiv.innerText;
-            if (text && text !== '(نتیجه گفتار اینجا ظاهر می‌شود...)') {
-                const blob = new Blob([text], {type: 'text/plain'});
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = 'speech_to_text.txt';
-                a.click();
-                URL.revokeObjectURL(a.href);
-            } else alert('متن موجود نیست');
-        });
-        clearBtn.addEventListener('click', () => {
-            resultDiv.innerText = '';
-            lastAddedText = '';
-            // همچنین اگر صدا در حال پخش است، قطع شود
-            if (window.speechSynthesis) window.speechSynthesis.cancel();
         });
     })();
 </script>
