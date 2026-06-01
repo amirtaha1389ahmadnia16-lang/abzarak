@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>دیکته صوتی حرفه‌ای | ابزارک</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Vazirmatn", "Tahoma", sans-serif;
+        background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1rem;
+        min-height: 100vh;
+        transition: background 0.3s;
+      }
+      body.dark {
+        background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+        color: #e2e8f0;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        color: #1e293b;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        transition: 0.2s;
+        border: 1px solid #e2e8f0;
+      }
+      body.dark .back-link {
+        background: #1e293b;
+        color: #cbd5e1;
+        border-color: #334155;
+      }
+      .back-link:hover {
+        background: #f8fafc;
+        transform: translateX(-4px);
+      }
+      .tools-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+      }
+      .card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eef2ff;
+        transition:
+          background 0.3s,
+          border 0.3s;
+      }
+      body.dark .card {
+        background: #1e293b;
+        border-color: #334155;
+      }
+      h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.2rem;
+        border-right: 4px solid #3b82f6;
+        padding-right: 0.8rem;
+      }
+      .control-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+        background: #f8fafc;
+        padding: 0.6rem;
+        border-radius: 1rem;
+      }
+      body.dark .control-group {
+        background: #0f172a;
+      }
+      .control-group label {
+        font-weight: 600;
+        min-width: 80px;
+      }
+      select,
+      button,
+      input {
+        font-family: inherit;
+      }
+      select {
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.8rem;
+        border: 1px solid #cbd5e1;
+        background: white;
+      }
+      body.dark select {
+        background: #334155;
+        color: white;
+        border-color: #475569;
+      }
+      .microphone-btn {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .microphone-btn:hover {
+        background: #2563eb;
+        transform: scale(1.02);
+      }
+      .stop-btn {
+        background: #dc2626;
+      }
+      .stop-btn:hover {
+        background: #b91c1c;
+      }
+      .status-wave {
+        background: #f1f5f9;
+        border-radius: 1rem;
+        padding: 0.8rem;
+        text-align: center;
+        margin: 1rem 0;
+        font-weight: 500;
+        transition: 0.3s;
+      }
+      body.dark .status-wave {
+        background: #0f172a;
+      }
+      .result-box {
+        background: #fefefe;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1.2rem;
+        min-height: 250px;
+        margin: 1rem 0;
+        font-size: 1rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: "Vazirmatn", monospace;
+        transition: all 0.2s;
+      }
+      body.dark .result-box {
+        background: #0f172a;
+        border-color: #334155;
+        color: #e2e8f0;
+      }
+      .btn-group {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+      .btn-secondary {
+        background: #e2e8f0;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      body.dark .btn-secondary {
+        background: #334155;
+        color: #e2e8f0;
+      }
+      .btn-secondary:hover {
+        background: #cbd5e1;
+      }
+      .wave-animation i {
+        font-size: 1.2rem;
+        animation: pulse 1s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 0.3;
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+      @media (max-width: 800px) {
+        .tools-panel {
+          grid-template-columns: 1fr;
+        }
+      }
+      footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #64748b;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="index.html" class="back-link"
+        ><i class="fas fa-arrow-right"></i> بازگشت به ابزارک</a
+      >
+      <div class="tools-panel">
+        <!-- بخش تنظیمات و کنترل -->
+        <div class="card">
+          <h2><i class="fas fa-microphone-alt"></i> تنظیمات دیکته صوتی</h2>
+          <div class="control-group">
+            <label>🌐 زبان ورودی:</label>
+            <select id="languageSelect">
+              <option value="fa-IR">فارسی</option>
+              <option value="en-US">انگلیسی (US)</option>
+              <option value="en-GB">انگلیسی (UK)</option>
+              <option value="ar-EG">عربی</option>
+              <option value="tr-TR">ترکی</option>
+              <option value="de-DE">آلمانی</option>
+              <option value="fr-FR">فرانسوی</option>
+              <option value="es-ES">اسپانیایی</option>
+            </select>
+            <button id="themeToggle" class="btn-secondary">
+              <i class="fas fa-moon"></i> حالت شب
+            </button>
+          </div>
+          <div id="permissionStatus" class="status-wave">
+            <i class="fas fa-info-circle"></i> ابتدا دکمه «درخواست دسترسی
+            میکروفون» را بزنید.
+          </div>
+          <button id="requestPermissionBtn" class="microphone-btn">
+            <i class="fas fa-microphone"></i> درخواست دسترسی میکروفون
+          </button>
+          <div id="recordingControls" style="display: none; margin-top: 1rem">
+            <button id="startRecordBtn" class="microphone-btn">
+              <i class="fas fa-play"></i> شروع ضبط
+            </button>
+            <button id="stopRecordBtn" class="microphone-btn stop-btn" disabled>
+              <i class="fas fa-stop"></i> توقف
+            </button>
+          </div>
+          <div class="status-wave" id="waveStatus" style="display: none">
+            <i class="fas fa-microphone-alt wave-animation"></i> در حال ضبط...
+            صدای شما به متن تبدیل می‌شود.
+          </div>
+        </div>
+
+        <!-- بخش نمایش متن و عملیات -->
+        <div class="card">
+          <h2><i class="fas fa-file-alt"></i> متن تشخیص داده شده</h2>
+          <div id="resultText" class="result-box" contenteditable="true">
+            (نتیجه گفتار اینجا ظاهر می‌شود...)
+          </div>
+          <div class="btn-group">
+            <button id="copyTextBtn" class="btn-secondary">
+              <i class="fas fa-copy"></i> کپی متن
+            </button>
+            <button id="downloadTxtBtn" class="btn-secondary">
+              <i class="fas fa-download"></i> دانلود TXT
+            </button>
+            <button id="clearTextBtn" class="btn-secondary">
+              <i class="fas fa-trash-alt"></i> پاک کردن متن
+            </button>
+            <button id="saveLocalBtn" class="btn-secondary">
+              <i class="fas fa-save"></i> ذخیره موقت
+            </button>
+            <button id="loadLocalBtn" class="btn-secondary">
+              <i class="fas fa-undo-alt"></i> بازیابی آخرین
+            </button>
+          </div>
+          <p style="font-size: 0.75rem; margin-top: 0.8rem; color: #475569">
+            <i class="fas fa-info-circle"></i> متن قابل ویرایش است. برای شروع
+            ضبط ابتدا دسترسی میکروفون را بدهید.
+          </p>
+        </div>
+      </div>
+      <footer>
+        <i class="fas fa-lock"></i> پردازش در مرورگر شما - صدایی ارسال نمی‌شود.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        // DOM elements
+        const permissionStatus = document.getElementById("permissionStatus");
+        const requestBtn = document.getElementById("requestPermissionBtn");
+        const recordingDiv = document.getElementById("recordingControls");
+        const startBtn = document.getElementById("startRecordBtn");
+        const stopBtn = document.getElementById("stopRecordBtn");
+        const resultDiv = document.getElementById("resultText");
+        const copyBtn = document.getElementById("copyTextBtn");
+        const downloadBtn = document.getElementById("downloadTxtBtn");
+        const clearBtn = document.getElementById("clearTextBtn");
+        const saveLocalBtn = document.getElementById("saveLocalBtn");
+        const loadLocalBtn = document.getElementById("loadLocalBtn");
+        const themeToggle = document.getElementById("themeToggle");
+        const languageSelect = document.getElementById("languageSelect");
+        const waveStatus = document.getElementById("waveStatus");
+
+        let recognition = null;
+        let isListening = false;
+        let mediaStream = null;
+        let currentLang = "fa-IR";
+
+        // پشتیبانی از SpeechRecognition
+        const SpeechRecognitionAPI =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognitionAPI) {
+          permissionStatus.innerHTML =
+            '<i class="fas fa-exclamation-triangle"></i> مرورگر شما از تشخیص گفتار پشتیبانی نمی‌کند. لطفاً از Chrome، Edge یا Safari جدید استفاده کنید.';
+          requestBtn.disabled = true;
+          return;
+        }
+
+        // ذخیره و بازیابی محلی (localStorage)
+        const STORAGE_KEY = "speechToText_backup";
+        function saveToLocal() {
+          const text = resultDiv.innerText;
+          if (text && text !== "(نتیجه گفتار اینجا ظاهر می‌شود...)") {
+            localStorage.setItem(STORAGE_KEY, text);
+            alert("متن ذخیره شد.");
+          } else alert("متن خالی است.");
+        }
+        function loadFromLocal() {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            resultDiv.innerText = saved;
+            alert("متن بازیابی شد.");
+          } else alert("هیچ متن ذخیره‌ای یافت نشد.");
+        }
+        saveLocalBtn.addEventListener("click", saveToLocal);
+        loadLocalBtn.addEventListener("click", loadFromLocal);
+
+        // حالت تاریک/روشن
+        let darkMode = localStorage.getItem("speechDark") === "true";
+        function applyTheme() {
+          if (darkMode) document.body.classList.add("dark");
+          else document.body.classList.remove("dark");
+          localStorage.setItem("speechDark", darkMode);
+        }
+        themeToggle.addEventListener("click", () => {
+          darkMode = !darkMode;
+          applyTheme();
+        });
+        applyTheme();
+
+        // درخواست دسترسی میکروفون
+        async function requestMicrophone() {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+            });
+            mediaStream = stream;
+            permissionStatus.innerHTML =
+              '<i class="fas fa-check-circle" style="color:#16a34a;"></i> دسترسی تأیید شد. می‌توانید ضبط را شروع کنید.';
+            permissionStatus.style.background = "#dcfce7";
+            if (document.body.classList.contains("dark"))
+              permissionStatus.style.background = "#14532d";
+            requestBtn.style.display = "none";
+            recordingDiv.style.display = "block";
+
+            // آماده‌سازی recognition با زبان انتخابی
+            initRecognition();
+          } catch (err) {
+            permissionStatus.innerHTML =
+              '<i class="fas fa-ban"></i> دسترسی به میکروفون رد شد یا خطایی رخ داد.';
+            permissionStatus.style.background = "#fee2e2";
+            if (document.body.classList.contains("dark"))
+              permissionStatus.style.background = "#7f1a1a";
+          }
+        }
+
+        function initRecognition() {
+          if (recognition) {
+            try {
+              recognition.abort();
+            } catch (e) {}
+          }
+          recognition = new SpeechRecognitionAPI();
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.lang = currentLang;
+          recognition.maxAlternatives = 1;
+
+          recognition.onstart = () => {
+            isListening = true;
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            waveStatus.style.display = "block";
+            permissionStatus.innerHTML =
+              '<i class="fas fa-microphone-alt wave-animation"></i> در حال ضبط... صحبت کنید.';
+            permissionStatus.style.background = "#fef9c3";
+            if (document.body.classList.contains("dark"))
+              permissionStatus.style.background = "#713f12";
+          };
+          recognition.onend = () => {
+            isListening = false;
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            waveStatus.style.display = "none";
+            if (mediaStream) {
+              mediaStream.getTracks().forEach((t) => t.stop());
+              mediaStream = null;
+            }
+            permissionStatus.innerHTML =
+              '<i class="fas fa-stop-circle"></i> ضبط متوقف شد. برای ادامه دکمه شروع را بزنید.';
+            permissionStatus.style.background = "#f1f5f9";
+            if (document.body.classList.contains("dark"))
+              permissionStatus.style.background = "#0f172a";
+          };
+          recognition.onerror = (event) => {
+            let errorMsg = "";
+            if (event.error === "no-speech")
+              errorMsg = "صدایی تشخیص داده نشد. میکروفون را بررسی کنید.";
+            else if (event.error === "audio-capture")
+              errorMsg = "میکروفون پیدا نشد.";
+            else if (event.error === "not-allowed")
+              errorMsg = "دسترسی به میکروفون داده نشد.";
+            else errorMsg = "خطا: " + event.error;
+            permissionStatus.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${errorMsg}`;
+            permissionStatus.style.background = "#fee2e2";
+            if (document.body.classList.contains("dark"))
+              permissionStatus.style.background = "#7f1a1a";
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            isListening = false;
+            waveStatus.style.display = "none";
+            if (mediaStream) {
+              mediaStream.getTracks().forEach((t) => t.stop());
+              mediaStream = null;
+            }
+          };
+          recognition.onresult = (event) => {
+            let interim = "";
+            let final = "";
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              const transcript = event.results[i][0].transcript;
+              if (event.results[i].isFinal) final += transcript + " ";
+              else interim += transcript;
+            }
+            if (final !== "") {
+              let current = resultDiv.innerText;
+              if (current === "(نتیجه گفتار اینجا ظاهر می‌شود...)")
+                current = "";
+              resultDiv.innerText = current + final;
+            }
+            // می‌توانیم interim را در جای دیگری نمایش دهیم، فعلاً فقط نهایی اضافه می‌شود
+          };
+        }
+
+        function startRecording() {
+          if (!recognition) {
+            alert("ابتدا درخواست دسترسی میکروفون را بزنید.");
+            return;
+          }
+          if (!isListening) {
+            // تنظیم زبان قبل از شروع
+            const newLang = languageSelect.value;
+            if (newLang !== currentLang) {
+              currentLang = newLang;
+              initRecognition();
+            }
+            recognition.start();
+          }
+        }
+        function stopRecording() {
+          if (recognition && isListening) recognition.stop();
+        }
+
+        requestBtn.addEventListener("click", requestMicrophone);
+        startBtn.addEventListener("click", startRecording);
+        stopBtn.addEventListener("click", stopRecording);
+        languageSelect.addEventListener("change", () => {
+          if (recognition && !isListening) {
+            currentLang = languageSelect.value;
+            initRecognition();
+            permissionStatus.innerHTML = `<i class="fas fa-language"></i> زبان به ${languageSelect.options[languageSelect.selectedIndex].text} تغییر کرد.`;
+          } else if (isListening) {
+            alert("لطفاً ابتدا ضبط را متوقف کنید، سپس زبان را تغییر دهید.");
+            languageSelect.value = currentLang;
+          }
+        });
+
+        copyBtn.addEventListener("click", () => {
+          const text = resultDiv.innerText;
+          if (text && text !== "(نتیجه گفتار اینجا ظاهر می‌شود...)") {
+            navigator.clipboard.writeText(text);
+            alert("✅ متن کپی شد");
+          } else alert("متن موجود نیست");
+        });
+        downloadBtn.addEventListener("click", () => {
+          const text = resultDiv.innerText;
+          if (text && text !== "(نتیجه گفتار اینجا ظاهر می‌شود...)") {
+            const blob = new Blob([text], { type: "text/plain" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "speech_to_text.txt";
+            a.click();
+            URL.revokeObjectURL(a.href);
+          } else alert("متن موجود نیست");
+        });
+        clearBtn.addEventListener("click", () => {
+          resultDiv.innerText = "";
+        });
+      })();
+    </script>
+  </body>
+</html>

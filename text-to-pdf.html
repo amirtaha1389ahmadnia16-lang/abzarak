@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>ابزار حرفه‌ای متن به PDF | ابزارک</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- کتابخانه‌های تبدیل -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Vazirmatn", "Tahoma", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1rem;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      /* دکمه بازگشت */
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        color: #1e293b;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        transition: 0.2s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+      }
+      .back-link:hover {
+        background: #f8fafc;
+        transform: translateX(-4px);
+      }
+
+      /* گرید دو ستونه با واکنش‌گرایی */
+      .tools-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+      }
+
+      /* کارت تنظیمات و پیش‌نمایش */
+      .card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eef2ff;
+      }
+
+      .card h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-right: 4px solid #3b82f6;
+        padding-right: 0.8rem;
+      }
+
+      /* گروه کنترل */
+      .control-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1rem;
+        background: #f8fafc;
+        padding: 0.6rem;
+        border-radius: 1rem;
+      }
+      .control-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1e293b;
+        min-width: 85px;
+      }
+      .control-group select,
+      .control-group input {
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.8rem;
+        border: 1px solid #cbd5e1;
+        background: white;
+        font-family: inherit;
+        font-size: 0.85rem;
+      }
+      input[type="color"] {
+        width: 45px;
+        height: 35px;
+        padding: 0;
+        cursor: pointer;
+      }
+      textarea {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 1rem;
+        border: 1px solid #cbd5e1;
+        font-family: inherit;
+        font-size: 1rem;
+        margin: 0.5rem 0 1rem 0;
+        resize: vertical;
+        background: #fefefe;
+      }
+      .btn-group {
+        display: flex;
+        gap: 0.8rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+      .btn-primary {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 0.7rem 1.2rem;
+        border-radius: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        flex: 1;
+        transition: 0.2s;
+      }
+      .btn-primary:hover {
+        background: #1d4ed8;
+      }
+      .btn-secondary {
+        background: #e2e8f0;
+        color: #1e293b;
+        border: none;
+        padding: 0.7rem 1.2rem;
+        border-radius: 2rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .btn-secondary:hover {
+        background: #cbd5e1;
+      }
+
+      /* پیش‌نمایش زنده */
+      .live-preview {
+        background: white;
+        border-radius: 1rem;
+        min-height: 550px;
+        max-height: 70vh;
+        overflow-y: auto;
+        font-family: "Vazirmatn", sans-serif;
+        transition: all 0.2s;
+        border: 1px solid #e2e8f0;
+      }
+
+      /* مقیاس کیفیت */
+      .range-value {
+        background: #e2e8f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        font-weight: bold;
+      }
+
+      /* ریسپانسیو */
+      @media (max-width: 900px) {
+        .tools-panel {
+          grid-template-columns: 1fr;
+          gap: 1.2rem;
+        }
+        body {
+          padding: 0.8rem;
+        }
+        .card {
+          padding: 1rem;
+        }
+      }
+      @media (max-width: 500px) {
+        .control-group {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .control-group label {
+          min-width: auto;
+        }
+        .btn-group {
+          flex-direction: column;
+        }
+      }
+
+      /* استایل اسکرول */
+      .live-preview::-webkit-scrollbar {
+        width: 6px;
+      }
+      .live-preview::-webkit-scrollbar-track {
+        background: #e2e8f0;
+        border-radius: 10px;
+      }
+      .live-preview::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="index.html" class="back-link"
+        ><i class="fas fa-arrow-right"></i> بازگشت به صفحه اصلی ابزارک</a
+      >
+      <div class="tools-panel">
+        <!-- سمت راست: تنظیمات و ویرایشگر -->
+        <div class="card">
+          <h2><i class="fas fa-sliders-h"></i> تنظیمات حرفه‌ای PDF</h2>
+          <label><i class="fas fa-edit"></i> متن خود را وارد کنید:</label>
+          <textarea
+            id="textInput"
+            rows="5"
+            placeholder="مثال: سلام، این یک متن آزمایشی است.&#10;این ابزار کاملاً در مرورگر شما کار می‌کند.&#10;&#10;پشتیبانی از فارسی و انگلیسی و تنظیمات متنوع"
+          ></textarea>
+
+          <div class="control-group">
+            <label>فرمت کاغذ:</label>
+            <select id="paperFormat">
+              <option value="a4">A4 (استاندارد)</option>
+              <option value="a3">A3 (بزرگ)</option>
+              <option value="letter">Letter</option>
+              <option value="legal">Legal</option>
+            </select>
+            <label>جهت:</label>
+            <select id="orientation">
+              <option value="portrait">عمودی (Portrait)</option>
+              <option value="landscape">افقی (Landscape)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label>حاشیه (پیکسل):</label>
+            <input
+              type="number"
+              id="marginPx"
+              value="40"
+              step="5"
+              min="0"
+              max="150"
+            />
+          </div>
+
+          <div class="control-group">
+            <label>چینش متن:</label>
+            <select id="textAlign">
+              <option value="right">راست‌چین</option>
+              <option value="center">وسط‌چین</option>
+              <option value="left">چپ‌چین</option>
+              <option value="justify">هم‌راستا (توجیه)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label>اندازه فونت (pt):</label>
+            <input
+              type="number"
+              id="fontSize"
+              value="14"
+              step="1"
+              min="8"
+              max="40"
+            />
+            <label>ارتفاع سطر:</label>
+            <input
+              type="number"
+              id="lineHeight"
+              value="1.6"
+              step="0.1"
+              min="1"
+              max="3"
+            />
+          </div>
+
+          <div class="control-group">
+            <label>رنگ متن:</label>
+            <input type="color" id="textColor" value="#1e293b" />
+            <label>رنگ پس‌زمینه:</label>
+            <input type="color" id="bgColor" value="#ffffff" />
+          </div>
+
+          <div class="control-group">
+            <label>فاصله پاراگراف (px):</label>
+            <input
+              type="number"
+              id="paragraphMargin"
+              value="16"
+              step="2"
+              min="0"
+              max="80"
+            />
+          </div>
+
+          <div class="control-group">
+            <label>کیفیت رندر (مقیاس):</label>
+            <input
+              type="range"
+              id="scale"
+              min="1"
+              max="4"
+              step="0.1"
+              value="2.5"
+            />
+            <span class="range-value" id="scaleValue">2.5</span>
+            <small style="color: #475569"
+              >(بالاتر = کیفیت بهتر و حجم بیشتر)</small
+            >
+          </div>
+
+          <div class="control-group">
+            <label>نام فایل خروجی:</label>
+            <input
+              type="text"
+              id="fileName"
+              value="document"
+              placeholder="نام فایل"
+            />
+            <span>.pdf</span>
+          </div>
+
+          <div class="btn-group">
+            <button id="clearBtn" class="btn-secondary">
+              <i class="fas fa-eraser"></i> پاک کردن متن
+            </button>
+            <button id="resetBtn" class="btn-secondary">
+              <i class="fas fa-undo-alt"></i> تنظیمات پیش‌فرض
+            </button>
+            <button id="generateBtn" class="btn-primary">
+              <i class="fas fa-download"></i> ساخت PDF نهایی
+            </button>
+          </div>
+        </div>
+
+        <!-- سمت چپ: پیش‌نمایش زنده -->
+        <div class="card">
+          <h2><i class="fas fa-eye"></i> پیش‌نمایش دقیق PDF</h2>
+          <div
+            id="livePreview"
+            class="live-preview"
+            style="padding: 20px"
+          ></div>
+          <p
+            style="
+              font-size: 0.75rem;
+              margin-top: 0.8rem;
+              color: #475569;
+              text-align: center;
+            "
+          >
+            <i class="fas fa-mobile-alt"></i> این پیش‌نمایش با همان استایل نهایی
+            PDF نمایش داده می‌شود.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // -------------------- دریافت المان‌ها --------------------
+        const textInput = document.getElementById("textInput");
+        const livePreview = document.getElementById("livePreview");
+        const generateBtn = document.getElementById("generateBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const paperFormat = document.getElementById("paperFormat");
+        const orientation = document.getElementById("orientation");
+        const marginPx = document.getElementById("marginPx");
+        const textAlign = document.getElementById("textAlign");
+        const fontSize = document.getElementById("fontSize");
+        const lineHeight = document.getElementById("lineHeight");
+        const textColor = document.getElementById("textColor");
+        const bgColor = document.getElementById("bgColor");
+        const paragraphMargin = document.getElementById("paragraphMargin");
+        const scale = document.getElementById("scale");
+        const scaleValue = document.getElementById("scaleValue");
+        const fileNameInput = document.getElementById("fileName");
+
+        // به‌روزرسانی مقدار نمایشی مقیاس
+        scale.addEventListener("input", () => {
+          scaleValue.innerText = scale.value;
+        });
+
+        // -------------------- تابع تبدیل متن به HTML با پاراگراف‌بندی و فاصله --------------------
+        function formatTextToHTML(text, paraMarginPx) {
+          if (!text.trim())
+            return '<p style="margin:0; color:#94a3b8;">(متن را در قسمت سمت راست وارد کنید...)</p>';
+          // جدا کردن پاراگراف‌ها با دو خط خالی یا بیشتر
+          let paragraphs = text.split(/\n\s*\n/);
+          let html = "";
+          for (let para of paragraphs) {
+            if (para.trim() !== "") {
+              // شکستن خطوط داخل پاراگراف به <br>
+              const lines = para.split("\n");
+              const contentWithBr = lines.join("<br>");
+              html += `<p style="margin-bottom: ${paraMarginPx}px; margin-top: 0; direction: rtl;">${contentWithBr}</p>`;
+            } else {
+              // پاراگراف خالی (فاصله عمودی)
+              html += `<p style="margin-bottom: ${paraMarginPx}px;"> </p>`;
+            }
+          }
+          return html;
+        }
+
+        // -------------------- به‌روزرسانی پیش‌نمایش زنده --------------------
+        function updatePreview() {
+          const rawText = textInput.value;
+          const margin = parseInt(marginPx.value) || 40;
+          const htmlContent = formatTextToHTML(rawText, paragraphMargin.value);
+          // اعمال استایل روی کانتینر پیش‌نمایش
+          livePreview.style.textAlign = textAlign.value;
+          livePreview.style.fontSize = fontSize.value + "pt";
+          livePreview.style.lineHeight = lineHeight.value;
+          livePreview.style.color = textColor.value;
+          livePreview.style.backgroundColor = bgColor.value;
+          livePreview.style.padding = margin + "px";
+          livePreview.style.fontFamily = "'Vazirmatn', 'Tahoma', sans-serif";
+          livePreview.innerHTML = htmlContent;
+        }
+
+        // رویدادهای به‌روزرسانی
+        textInput.addEventListener("input", updatePreview);
+        const allSettings = [
+          textAlign,
+          fontSize,
+          lineHeight,
+          textColor,
+          bgColor,
+          marginPx,
+          paragraphMargin,
+        ];
+        allSettings.forEach((setting) =>
+          setting.addEventListener("input", updatePreview),
+        );
+        // همچنین برای ایمنی، رنگ پس‌زمینه و حاشیه که قبلاً اضافه شد
+        bgColor.addEventListener("input", updatePreview);
+        marginPx.addEventListener("input", updatePreview);
+        paragraphMargin.addEventListener("input", updatePreview);
+
+        // -------------------- دکمه پاک کردن --------------------
+        clearBtn.addEventListener("click", () => {
+          textInput.value = "";
+          updatePreview();
+        });
+
+        // -------------------- تنظیمات پیش‌فرض --------------------
+        resetBtn.addEventListener("click", () => {
+          paperFormat.value = "a4";
+          orientation.value = "portrait";
+          marginPx.value = "40";
+          textAlign.value = "right";
+          fontSize.value = "14";
+          lineHeight.value = "1.6";
+          textColor.value = "#1e293b";
+          bgColor.value = "#ffffff";
+          paragraphMargin.value = "16";
+          scale.value = "2.5";
+          scaleValue.innerText = "2.5";
+          fileNameInput.value = "document";
+          updatePreview();
+        });
+
+        // -------------------- تولید PDF نهایی با html2canvas + jsPDF --------------------
+        generateBtn.addEventListener("click", async () => {
+          const rawText = textInput.value.trim();
+          if (!rawText) {
+            alert("⚠️ لطفاً متنی برای تبدیل وارد کنید.");
+            return;
+          }
+
+          // نمایش وضعیت در حال ساخت
+          const originalText = generateBtn.innerHTML;
+          generateBtn.disabled = true;
+          generateBtn.innerHTML =
+            '<i class="fas fa-spinner fa-pulse"></i> در حال ساخت PDF با کیفیت بالا ...';
+
+          // ایجاد یک المان مخفی برای رندر کردن دقیق (مشابه پیش‌نمایش ولی با ابعاد ثابت برای کیفیت)
+          const renderDiv = document.createElement("div");
+          renderDiv.style.direction = "rtl";
+          renderDiv.style.fontFamily = "'Vazirmatn', 'Tahoma', sans-serif";
+          renderDiv.style.textAlign = textAlign.value;
+          renderDiv.style.fontSize = fontSize.value + "pt";
+          renderDiv.style.lineHeight = lineHeight.value;
+          renderDiv.style.color = textColor.value;
+          renderDiv.style.backgroundColor = bgColor.value;
+          renderDiv.style.padding = marginPx.value + "px";
+          renderDiv.style.width = "800px"; // عرض ثابت برای رندر یکنواخت
+          renderDiv.style.position = "absolute";
+          renderDiv.style.top = "-9999px";
+          renderDiv.style.left = "-9999px";
+          renderDiv.style.zIndex = "-1";
+          renderDiv.innerHTML = formatTextToHTML(
+            rawText,
+            paragraphMargin.value,
+          );
+          document.body.appendChild(renderDiv);
+
+          try {
+            // رندر با html2canvas
+            const canvas = await html2canvas(renderDiv, {
+              scale: parseFloat(scale.value),
+              backgroundColor: bgColor.value,
+              logging: false,
+              useCORS: true,
+              windowWidth: renderDiv.scrollWidth,
+              windowHeight: renderDiv.scrollHeight,
+            });
+
+            // حذف المان موقت
+            document.body.removeChild(renderDiv);
+
+            // تنظیمات jsPDF بر اساس فرمت و جهت
+            const format = paperFormat.value;
+            const orient = orientation.value === "portrait" ? "p" : "l";
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF(orient, "mm", format);
+
+            const imgData = canvas.toDataURL("image/jpeg", 0.92);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = pdfWidth;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+            let pageIndex = 1;
+
+            pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) {
+              position = heightLeft - imgHeight;
+              pdf.addPage();
+              pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+              heightLeft -= pdfHeight;
+              pageIndex++;
+            }
+
+            // ذخیره فایل با نام دلخواه
+            let fileName = fileNameInput.value.trim();
+            if (fileName === "") fileName = "document";
+            pdf.save(fileName + ".pdf");
+          } catch (error) {
+            console.error(error);
+            alert("❌ خطا در تولید PDF. لطفاً دوباره تلاش کنید.");
+            if (document.body.contains(renderDiv))
+              document.body.removeChild(renderDiv);
+          } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = originalText;
+          }
+        });
+
+        // مقداردهی اولیه پیش‌نمایش
+        updatePreview();
+      })();
+    </script>
+  </body>
+</html>
