@@ -1,962 +1,771 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Dictation Pro | تبدیل صدای حرفه‌ای به متن (قابل ویرایش)</title>
-    <!-- Font Awesome 6 (Free CDN) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Font: Vazir (وزیر) -->
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="ابزارک - مجموعه‌ای از ابزارهای کاربردی آنلاین: تبدیل صوت به متن، متن به PDF، ساخت بارکد و کیوآر کد و بسیاری ابزارهای مفید دیگر"
+    />
+    <meta name="theme-color" content="#3b82f6" />
+    <title>ابزارک | مجموعه ابزارهای هوشمند آنلاین</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        :root {
-            --bg-gradient: radial-gradient(circle at 10% 20%, rgba(248, 249, 255, 1) 0%, rgba(238, 242, 250, 1) 100%);
-            --card-bg: rgba(255, 255, 255, 0.96);
-            --card-border: rgba(0, 0, 0, 0.08);
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --accent: #0f3b2c;
-            --accent-light: #2c7a4d;
-            --accent-glow: rgba(44, 122, 77, 0.25);
-            --danger: #e53e3e;
-            --danger-glow: rgba(229, 62, 62, 0.2);
-            --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 25px 45px -12px rgba(0, 0, 0, 0.2);
-            --transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
+      html,
+      body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+      }
 
-        body.dark {
-            --bg-gradient: radial-gradient(circle at 20% 30%, #121826 0%, #0b0f17 100%);
-            --card-bg: rgba(28, 33, 48, 0.92);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-primary: #edf2f7;
-            --text-secondary: #a0aec0;
-            --accent: #48bb78;
-            --accent-light: #68d391;
-            --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.5);
-        }
+      body {
+        font-family: "Vazirmatn", "Tahoma", "Segoe UI", system-ui, sans-serif;
+        background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+        color: #0f172a;
+        line-height: 1.5;
+      }
 
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-primary);
-            font-family: 'Vazir', 'Segoe UI', system-ui, sans-serif;
-            min-height: 100vh;
-            padding: 1.8rem 1rem;
-            transition: var(--transition);
-            backdrop-filter: blur(2px);
-        }
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        width: 100%;
+      }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+      /* Header */
+      .header {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(4px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        border-bottom: 1px solid #e2e8f0;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        width: 100%;
+      }
 
-        /* Header PRO */
-        .hero {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.8rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      .logo i {
+        background: none;
+        color: #3b82f6;
+        font-size: 2rem;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        font-weight: 500;
+        color: #334155;
+        transition: 0.2s;
+        font-size: 1rem;
+      }
+
+      .nav-links a:hover {
+        color: #2563eb;
+      }
+
+      .btn-outline {
+        border: 1px solid #cbd5e1;
+        padding: 0.5rem 1.2rem;
+        border-radius: 2rem;
+        background: white;
+        text-decoration: none;
+      }
+
+      .btn-outline:hover {
+        background: #f1f5f9;
+      }
+
+      /* Hero */
+      .hero {
+        padding: 2rem 0 3rem;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(to left, #1e293b, #2563eb);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        margin-bottom: 1rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+        color: #475569;
+        max-width: 680px;
+        margin: 0 auto 1.8rem;
+        padding: 0 1rem;
+      }
+
+      .search-tools {
+        max-width: 550px;
+        margin: 0 auto;
+        display: flex;
+        background: white;
+        border-radius: 3rem;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+      }
+
+      .search-tools input {
+        flex: 1;
+        padding: 0.9rem 1.5rem;
+        border: none;
+        font-family: inherit;
+        font-size: 1rem;
+        outline: none;
+      }
+
+      .search-tools button {
+        background: #2563eb;
+        border: none;
+        padding: 0 1.6rem;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: 500;
+        transition: 0.2s;
+      }
+      .search-tools button:hover {
+        background: #1d4ed8;
+      }
+
+      /* Section */
+      .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 2rem 0 1.5rem;
+        text-align: center;
+        width: 100%;
+      }
+
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0 3rem;
+      }
+
+      /* هر کارت یک لینک است */
+      .tool-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+      .tool-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+        border: 1px solid #eef2ff;
+        text-align: center;
+        height: 100%;
+      }
+      .tool-link:hover .tool-card {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+        border-color: #bfdbfe;
+      }
+
+      .tool-icon {
+        font-size: 2.5rem;
+        background: linear-gradient(145deg, #eef2ff, #e0e7ff);
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1.5rem;
+        margin: 0 auto 1.2rem;
+        color: #2563eb;
+      }
+
+      .tool-card h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #0f172a;
+      }
+
+      .tool-card p {
+        color: #475569;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .badge {
+        display: inline-block;
+        background: #e2e8f0;
+        padding: 0.25rem 0.8rem;
+        border-radius: 2rem;
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: #334155;
+      }
+      .badge-active {
+        background: #dcfce7;
+        color: #15803d;
+      }
+
+      /* پیام جستجو */
+      .no-results {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 2rem;
+        color: #64748b;
+        margin: 2rem 0;
+        grid-column: 1 / -1;
+      }
+
+      /* Feature banner */
+      .feature-banner {
+        background: linear-gradient(105deg, #1e293b 0%, #0f172a 100%);
+        border-radius: 2rem;
+        padding: 2rem;
+        margin: 2rem 0 3rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+
+      .feature-text h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+      }
+
+      .feature-text p {
+        color: #cbd5e1;
+      }
+
+      .feature-btn {
+        background: #facc15;
+        color: #0f172a;
+        padding: 0.8rem 2rem;
+        border-radius: 3rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      /* Footer */
+      .footer {
+        background: #ffffffcc;
+        backdrop-filter: blur(4px);
+        border-top: 1px solid #e2e8f0;
+        margin-top: 3rem;
+        padding: 2rem 0 1.5rem;
+        width: 100%;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .footer-links a,
+      .footer-content a {
+        text-decoration: none;
+        color: #475569;
+      }
+
+      .copyright {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.85rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      @media (max-width: 700px) {
         .hero h1 {
-            font-size: 2.4rem;
-            font-weight: 800;
-            background: linear-gradient(125deg, var(--accent-light), #1f5e3f);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .hero .badge-pro {
-            background: rgba(0,0,0,0.1);
-            font-size: 0.7rem;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-weight: 500;
-            color: var(--accent-light);
+          font-size: 1.8rem;
         }
         .hero p {
-            color: var(--text-secondary);
-            margin-top: 8px;
-            font-size: 0.9rem;
+          font-size: 1rem;
         }
+        .nav {
+          flex-direction: column;
+          text-align: center;
+        }
+        .nav-links {
+          justify-content: center;
+        }
+        .section-title {
+          font-size: 1.5rem;
+        }
+        .tools-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        .feature-banner {
+          text-align: center;
+          justify-content: center;
+        }
+        .container {
+          padding: 0 1rem;
+        }
+      }
 
-        /* Theme toggle premium */
-        .theme-toggle-premium {
-            position: fixed;
-            top: 1.2rem;
-            left: 1.2rem;
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            border-radius: 60px;
-            padding: 0.5rem 1.2rem;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            z-index: 100;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            font-size: 0.85rem;
+      @media (max-width: 480px) {
+        .tool-icon {
+          width: 55px;
+          height: 55px;
+          font-size: 2rem;
         }
-        .theme-toggle-premium:hover {
-            background: var(--accent-light);
-            color: white;
-            transform: scale(0.97);
-        }
-
-        /* Card */
-        .dictation-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border-radius: 2.5rem;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--card-border);
-            padding: 1.8rem 2rem;
-            transition: var(--transition);
-        }
-
-        /* تنظیمات پیشرفته */
-        .settings-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1.5px solid var(--card-border);
-            align-items: flex-end;
-        }
-        .lang-group {
-            flex: 2;
-            min-width: 180px;
-        }
-        .lang-group label, .continuous-group label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.4rem;
-            color: var(--text-secondary);
-        }
-        select {
-            width: 100%;
-            padding: 0.7rem 1rem;
-            border-radius: 1.2rem;
-            border: 1.5px solid var(--card-border);
-            background: var(--card-bg);
-            color: var(--text-primary);
-            font-family: 'Vazir', monospace;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .continuous-group {
-            flex: 1;
-        }
-        .checkbox-wrapper {
-            background: rgba(0,0,0,0.03);
-            border-radius: 2rem;
-            padding: 0.4rem 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            cursor: pointer;
-            width: fit-content;
-        }
-
-        /* میکروفون + متر حرفه‌ای */
-        .mic-studio {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        .status-pill {
-            background: rgba(0,0,0,0.05);
-            border-radius: 60px;
-            padding: 0.4rem 1rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: 1px solid var(--card-border);
-            white-space: nowrap;
-        }
-        .status-pill.recording {
-            background: var(--danger);
-            color: white;
-            animation: glowPulse 1.2s infinite;
-        }
-        @keyframes glowPulse {
-            0% { box-shadow: 0 0 0 0 rgba(229,62,62,0.5);}
-            70% { box-shadow: 0 0 0 10px rgba(229,62,62,0);}
-            100% { box-shadow: 0 0 0 0 rgba(229,62,62,0);}
-        }
-        .timer-pro {
-            font-family: monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: rgba(0,0,0,0.1);
-            padding: 0.2rem 0.9rem;
-            border-radius: 3rem;
-            letter-spacing: 2px;
-            white-space: nowrap;
-        }
-        .vu-metro {
-            flex: 2;
-            min-width: 120px;
-        }
-        canvas#waveCanvas {
-            width: 100%;
-            height: 48px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 40px;
-            display: block;
-        }
-        .action-buttons-pro {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        .btn-pro {
-            border: none;
-            padding: 0.8rem 1.6rem;
-            border-radius: 3rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-            background: rgba(0,0,0,0.05);
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-        .btn-primary-pro {
-            background: var(--accent-light);
-            color: white;
-            box-shadow: 0 5px 12px rgba(44,122,77,0.3);
-        }
-        .btn-primary-pro:hover {
-            background: #1f5e3f;
-            transform: translateY(-2px);
-        }
-        .btn-outline-pro {
-            border: 1.5px solid var(--card-border);
-            background: transparent;
-        }
-        .btn-outline-pro:hover {
-            background: var(--accent-light);
-            color: white;
-            border-color: var(--accent-light);
-        }
-        .btn-danger-pro {
-            background: var(--danger);
-            color: white;
-        }
-        .btn-danger-pro:hover {
-            background: #c53030;
-            transform: scale(0.97);
-        }
-
-        /* منطقه متن اصلی (قابل ویرایش) */
-        .text-master {
-            margin-top: 0.6rem;
-        }
-        .editor-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-bottom: 0.8rem;
-        }
-        .stats-badge {
-            background: rgba(0,0,0,0.05);
-            border-radius: 30px;
-            padding: 0.2rem 1rem;
-            font-size: 0.75rem;
-            white-space: nowrap;
-        }
-        .tool-icons {
-            display: flex;
-            gap: 0.3rem;
-            flex-wrap: wrap;
-        }
-        .icon-btn-pro {
-            background: transparent;
-            border: none;
-            font-size: 1rem;
-            padding: 0.3rem 0.8rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            transition: 0.2s;
-            color: var(--text-secondary);
-        }
-        .icon-btn-pro:hover {
-            background: var(--accent-light);
-            color: white;
-        }
-        textarea {
-            width: 100%;
-            padding: 1.2rem;
-            border-radius: 1.5rem;
-            border: 1.5px solid var(--card-border);
-            background: rgba(0,0,0,0.02);
-            color: var(--text-primary);
-            font-family: 'Vazir', monospace;
-            font-size: 1rem;
-            line-height: 1.7;
-            resize: vertical;
-            transition: 0.2s;
-        }
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent-light);
-            box-shadow: 0 0 0 4px var(--accent-glow);
-        }
-        .interim-live {
-            background: rgba(0,0,0,0.03);
-            border-radius: 1.2rem;
-            padding: 0.8rem 1rem;
-            margin-top: 1rem;
-            border-right: 4px solid var(--accent-light);
-            font-size: 0.85rem;
-        }
-        .info-footer {
-            margin-top: 1.2rem;
-            font-size: 0.7rem;
-            text-align: center;
-            color: var(--text-secondary);
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        hr {
-            margin: 1rem 0;
-            border-color: var(--card-border);
-        }
-        .toast-elite {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #1e293b;
-            color: white;
-            padding: 0.6rem 1.4rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            z-index: 1000;
-            opacity: 0;
-            transition: 0.2s;
-            pointer-events: none;
-            backdrop-filter: blur(10px);
-        }
-        .toast-elite.show {
-            opacity: 1;
-            transform: translateY(-6px);
-        }
-        .blink-cursor {
-            display: inline-block;
-            width: 2px;
-            height: 14px;
-            background: var(--accent-light);
-            animation: blink 1s infinite;
-            margin-right: 2px;
-        }
-        @keyframes blink {
-            0%,100%{ opacity: 1; } 50%{ opacity: 0; }
-        }
-
-        /* -----------------------------------------------
-           RESPONSIVE STYLES (موبایل، تبلت، لپ‌تاپ)
-        ----------------------------------------------- */
-        /* تبلت و زیر (حداکثر 900px) */
-        @media (max-width: 900px) {
-            .dictation-card {
-                padding: 1.5rem;
-            }
-            .hero h1 {
-                font-size: 2rem;
-            }
-            .timer-pro {
-                font-size: 1.3rem;
-                padding: 0.2rem 0.7rem;
-            }
-        }
-
-        /* موبایل (حداکثر 640px) */
-        @media (max-width: 640px) {
-            body {
-                padding: 1rem 0.8rem;
-            }
-            .hero h1 {
-                font-size: 1.6rem;
-                gap: 6px;
-            }
-            .hero p {
-                font-size: 0.8rem;
-            }
-            .theme-toggle-premium {
-                top: 0.8rem;
-                left: 0.8rem;
-                padding: 0.3rem 0.8rem;
-                font-size: 0.75rem;
-            }
-            .dictation-card {
-                padding: 1rem;
-                border-radius: 1.8rem;
-            }
-            .settings-row {
-                flex-direction: column;
-                gap: 0.8rem;
-                align-items: stretch;
-                margin-bottom: 1.5rem;
-            }
-            .lang-group, .continuous-group {
-                width: 100%;
-            }
-            .checkbox-wrapper {
-                width: 100%;
-                justify-content: center;
-            }
-            .mic-studio {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.7rem;
-            }
-            .status-pill {
-                justify-content: center;
-                width: fit-content;
-                margin: 0 auto;
-            }
-            .timer-pro {
-                text-align: center;
-                font-size: 1.4rem;
-            }
-            .vu-metro {
-                width: 100%;
-            }
-            .action-buttons-pro {
-                flex-direction: column;
-                gap: 0.7rem;
-            }
-            .btn-pro {
-                width: 100%;
-                justify-content: center;
-                padding: 0.7rem;
-            }
-            .editor-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .stats-badge {
-                white-space: normal;
-                width: 100%;
-                text-align: center;
-            }
-            .tool-icons {
-                width: 100%;
-                justify-content: space-around;
-            }
-            .icon-btn-pro {
-                flex: 1;
-                text-align: center;
-                padding: 0.4rem;
-            }
-            textarea {
-                font-size: 0.9rem;
-                padding: 0.9rem;
-            }
-            .interim-live {
-                font-size: 0.75rem;
-            }
-            .info-footer {
-                gap: 0.5rem;
-                flex-direction: column;
-                align-items: center;
-            }
-            .info-footer span {
-                display: block;
-            }
-        }
-
-        /* موبایل خیلی کوچک (تا 400px) */
-        @media (max-width: 400px) {
-            .hero h1 {
-                font-size: 1.3rem;
-            }
-            .timer-pro {
-                font-size: 1.1rem;
-            }
-            .btn-pro {
-                font-size: 0.8rem;
-                gap: 0.4rem;
-            }
-        }
+      }
     </style>
-</head>
-<body>
-<div class="theme-toggle-premium" id="themeSwitcher">
-    <i class="fas fa-moon"></i>
-    <span>تم شب</span>
-</div>
-<div class="container">
-    <div class="hero">
-        <h1><i class="fas fa-microphone-alt"></i> Dictation Pro <span class="badge-pro">Google Speech Engine</span></h1>
-        <p>تبدیل صدای زنده به متن با دقت بالا • ویرایش مستقیم • ابزارک حرفه‌ای</p>
-    </div>
-    <div class="dictation-card">
-        <!-- ردیف تنظیمات -->
-        <div class="settings-row">
-            <div class="lang-group">
-                <label><i class="fas fa-language"></i> زبان گفتار</label>
-                <select id="proLangSelect">
-                    <option value="fa-IR">فارسی (ایران)</option>
-                    <option value="en-US">English (US)</option>
-                    <option value="en-GB">English (UK)</option>
-                    <option value="ar-EG">العربية (مصر)</option>
-                    <option value="tr-TR">Türkçe</option>
-                    <option value="es-ES">Español</option>
-                    <option value="fr-FR">Français</option>
-                    <option value="de-DE">Deutsch</option>
-                    <option value="it-IT">Italiano</option>
-                    <option value="ru-RU">Русский</option>
-                    <option value="ja-JP">日本語</option>
-                    <option value="ko-KR">한국어</option>
-                    <option value="zh-CN">中文(简体)</option>
-                </select>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="nav">
+          <div class="logo">
+            <i class="fas fa-toolbox"></i>
+            <span>ابزارک</span>
+          </div>
+          <div class="nav-links">
+            <a href="index.html">خانه</a>
+            <a href="#">ابزارها</a>
+            <a href="#">تعرفه</a>
+            <a href="#">بلاگ</a>
+            <a href="#" class="btn-outline"
+              ><i class="fas fa-user"></i> ورود / ثبت‌نام</a
+            >
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <section class="hero">
+          <h1>ابزارک؛ همراه هوشمند کارهای روزمره</h1>
+          <p>
+            مجموعه‌ای از ابزارهای سریع، رایگان و حرفه‌ای: تبدیل فایل‌ها، تولید
+            بارکد، تبدیل صوت به متن و ده‌ها ابزار کاربردی دیگر.
+          </p>
+          <div class="search-tools">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="جستجوی ابزار مورد نظر... (مثل: PDF، صوت، بارکد)"
+            />
+            <button id="searchBtn"><i class="fas fa-search"></i> جستجو</button>
+          </div>
+        </section>
+
+        <h2 class="section-title">✨ ابزارهای محبوب و پرکاربرد</h2>
+        <div class="tools-grid" id="toolsGrid">
+          <!-- ابزار 1: متن به PDF (فعال - لینک به صفحه جدا) -->
+          <a
+            href="text-to-pdf.html"
+            class="tool-link"
+            data-tool-name="متن به PDF"
+            data-tool-desc="تبدیل یادداشت‌ها و متن‌های ساده به PDF حرفه‌ای"
+          >
+            <div class="tool-card">
+              <div class="tool-icon"><i class="fas fa-file-pdf"></i></div>
+              <h3>متن به PDF</h3>
+              <p>تبدیل یادداشت‌ها و متن‌های ساده به PDF حرفه‌ای</p>
+              <div class="badge badge-active">فعال</div>
             </div>
-            <div class="continuous-group">
-                <label>حالت ضبط</label>
-                <div class="checkbox-wrapper" id="continuousModeWrapper">
-                    <input type="checkbox" id="proContinuous" checked> 
-                    <span><i class="fas fa-infinity"></i> پیوسته (بدون قطع)</span>
-                </div>
+          </a>
+
+          <!-- ابزار 2: صوت به متن (به زودی) -->
+          <a
+            href="speech-to-text.html"
+            class="tool-link"
+            data-tool-name="صوت به متن"
+            data-tool-desc="تبدیل فایل صوتی یا گفتار زنده به متن با دقت بالا"
+          >
+            <div class="tool-card">
+              <div class="tool-icon"><i class="fas fa-microphone-alt"></i></div>
+              <h3>صوت به متن</h3>
+              <p>تبدیل فایل صوتی یا گفتار زنده به متن با دقت بالا</p>
+              <div class="badge badge-active">فعال</div>
             </div>
-        </div>
+          </a>
 
-        <!-- استودیو ضبط -->
-        <div class="mic-studio">
-            <div class="status-pill" id="proStatusBadge">
-                <i class="fas fa-microphone-slash"></i> <span id="statusMsg">آماده</span>
+          <!-- ابزار 3: PDF به متن (به زودی) -->
+          <a
+            href="#"
+            class="tool-link coming-soon"
+            data-tool-name="PDF به متن"
+            data-tool-desc="استخراج متن از فایل‌های PDF با ساختارخوانی هوشمند"
+          >
+            <div class="tool-card">
+              <div class="tool-icon"><i class="fas fa-file-alt"></i></div>
+              <h3>PDF به متن</h3>
+              <p>استخراج متن از فایل‌های PDF با ساختارخوانی هوشمند</p>
+              <div class="badge">به زودی</div>
             </div>
-            <div class="timer-pro" id="recordTimer">00:00</div>
-            <div class="vu-metro">
-                <canvas id="waveCanvas" width="300" height="48" style="width:100%; height:48px"></canvas>
+          </a>
+
+          <!-- ابزار 4: تبدیل واحدها (به زودی) -->
+          <a
+            href="#"
+            class="tool-link coming-soon"
+            data-tool-name="تبدیل واحدها"
+            data-tool-desc="انواع واحدهای اندازه‌گیری طول، وزن، دما، حجم و..."
+          >
+            <div class="tool-card">
+              <div class="tool-icon"><i class="fas fa-ruler-combined"></i></div>
+              <h3>تبدیل واحدها</h3>
+              <p>انواع واحدهای اندازه‌گیری طول، وزن، دما، حجم و...</p>
+              <div class="badge">به زودی</div>
             </div>
-        </div>
+          </a>
 
-        <div class="action-buttons-pro">
-            <button id="proStartBtn" class="btn-pro btn-primary-pro"><i class="fas fa-play"></i> شروع ضبط حرفه‌ای</button>
-            <button id="proStopBtn" class="btn-pro btn-outline-pro" disabled><i class="fas fa-stop"></i> توقف ضبط</button>
-        </div>
-
-        <!-- ناحیه متن اصلی (قابل ویرایش مستقیم) -->
-        <div class="text-master">
-            <div class="editor-header">
-                <span class="stats-badge" id="liveStats"><i class="fas fa-chart-line"></i> کلمات: 0 | کاراکتر: 0</span>
-                <div class="tool-icons">
-                    <button class="icon-btn-pro" id="copyFinalPro" title="کپی متن"><i class="fas fa-copy"></i></button>
-                    <button class="icon-btn-pro" id="downloadTxtPro" title="دانلود TXT"><i class="fas fa-file-alt"></i></button>
-                    <button class="icon-btn-pro" id="downloadDocPro" title="دانلود به صورت Word (DOC)"><i class="fas fa-file-word"></i></button>
-                    <button class="icon-btn-pro" id="clearFinalPro" title="پاک کردن متن"><i class="fas fa-trash-alt"></i></button>
-                </div>
+          <!-- ابزار 5: بارکد ساز (به زودی) -->
+          <a
+            href="#"
+            class="tool-link coming-soon"
+            data-tool-name="بارکد ساز"
+            data-tool-desc="ساخت بارکد خطی با فرمت‌های متنوع (Code128, EAN)"
+          >
+            <div class="tool-card">
+              <div class="tool-icon"><i class="fas fa-barcode"></i></div>
+              <h3>بارکد ساز</h3>
+              <p>ساخت بارکد خطی با فرمت‌های متنوع (Code128, EAN)</p>
+              <div class="badge">به زودی</div>
             </div>
-            <textarea id="proFinalText" rows="9" placeholder="متن تشخیص داده شده اینجا ظاهر می‌شود ... می‌توانید مستقیماً ویرایش، کپی یا حذف کنید."></textarea>
+          </a>
+
+          <!-- ابزار 6: کیوآر کد ساز (به زودی) -->
+          <a
+            href="#"
+            class="tool-link coming-soon"
+            data-tool-name="کیوآر کد ساز"
+            data-tool-desc="تولید QR کد سفارشی برای لینک، متن و اطلاعات تماس"
+          >
+            <div class="tool-card">
+              <div class="tool-icon"><i class="fas fa-qrcode"></i></div>
+              <h3>کیوآر کد ساز</h3>
+              <p>تولید QR کد سفارشی برای لینک، متن و اطلاعات تماس</p>
+              <div class="badge">به زودی</div>
+            </div>
+          </a>
+
+          <!-- ابزار 7: متن به صدا (به زودی) -->
+          <a
+            href="#"
+            class="tool-link coming-soon"
+            data-tool-name="متن به صدا"
+            data-tool-desc="تبدیل نوشته به گفتار طبیعی با گویش فارسی"
+          >
+            <div class="tool-card">
+              <div class="tool-icon"><i class="fas fa-volume-high"></i></div>
+              <h3>متن به صدا</h3>
+              <p>تبدیل نوشته به گفتار طبیعی با گویش فارسی</p>
+              <div class="badge">به زودی</div>
+            </div>
+          </a>
+
+          <!-- ابزار 8: محاسبه‌گر مهریه (به زودی) -->
+          <a
+            href="#"
+            class="tool-link coming-soon"
+            data-tool-name="محاسبه‌گر مهریه"
+            data-tool-desc="برآورد مهریه بر اساس سکه و شرایط قانونی"
+          >
+            <div class="tool-card">
+              <div class="tool-icon">
+                <i class="fas fa-hand-holding-heart"></i>
+              </div>
+              <h3>محاسبه‌گر مهریه</h3>
+              <p>برآورد مهریه بر اساس سکه و شرایط قانونی</p>
+              <div class="badge">به زودی</div>
+            </div>
+          </a>
+
+          <!-- ابزار 9: تصویر به متن OCR (به زودی) -->
+          <a
+            href="#"
+            class="tool-link coming-soon"
+            data-tool-name="تصویر به متن"
+            data-tool-desc="استخراج متن از عکس، اسکرین‌شات و اسناد تصویری"
+          >
+            <div class="tool-card">
+              <div class="tool-icon"><i class="fas fa-image"></i></div>
+              <h3>تصویر به متن (OCR)</h3>
+              <p>استخراج متن از عکس، اسکرین‌شات و اسناد تصویری</p>
+              <div class="badge">به زودی</div>
+            </div>
+          </a>
+
+          <!-- ابزار 10: ابزارهای PDF (به زودی) -->
+          <a
+            href="#"
+            class="tool-link coming-soon"
+            data-tool-name="ابزارهای PDF"
+            data-tool-desc="ادغام، فشرده‌سازی و محافظت از فایل‌های PDF"
+          >
+            <div class="tool-card">
+              <div class="tool-icon"><i class="fas fa-compress-alt"></i></div>
+              <h3>ابزارهای PDF</h3>
+              <p>ادغام، فشرده‌سازی و محافظت از فایل‌های PDF</p>
+              <div class="badge">به زودی</div>
+            </div>
+          </a>
         </div>
 
-        <!-- متن موقت اینتریم -->
-        <div class="interim-live" id="interimLiveBox">
-            <i class="fas fa-waveform"></i> <strong>تشخیص لحظه‌ای:</strong> <span id="interimTextSpan">—</span>
+        <div class="feature-banner">
+          <div class="feature-text">
+            <h3><i class="fas fa-gem"></i> ابزارک پریمیوم به زودی!</h3>
+            <p>
+              با عضویت در خبرنامه، از دسترسی زودهنگام به ابزارهای پیشرفته و
+              تخفیف ویژه مطلع شوید.
+            </p>
+          </div>
+          <a href="#" class="feature-btn" id="newsletterBtn"
+            >ثبت‌نام رایگان <i class="fas fa-arrow-left"></i
+          ></a>
         </div>
-        <div class="info-footer">
-            <span><i class="fas fa-check-circle"></i> مبتنی بر Web Speech API (Google Cloud)</span>
-            <span><i class="fas fa-edit"></i> ویرایش مستقیم متن در کادر</span>
-            <span><i class="fas fa-save"></i> ذخیره خودکار در مرورگر</span>
+
+        <div style="margin: 2rem 0 0.5rem">
+          <h2 class="section-title">⚡ سریع، رایگان، بدون نیاز به نصب</h2>
+          <p
+            style="
+              text-align: center;
+              color: #475569;
+              max-width: 700px;
+              margin: 0 auto 2rem auto;
+            "
+          >
+            تمامی ابزارها مستقیماً در مرورگر شما اجرا می‌شوند و فایل‌های شما
+            هرگز روی سرور ذخیره نمی‌شوند.
+          </p>
         </div>
-    </div>
-</div>
-<div id="eliteToast" class="toast-elite"></div>
+        <div
+          style="
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+          "
+        >
+          <div
+            style="
+              background: #eef2ff;
+              border-radius: 3rem;
+              padding: 0.5rem 1.2rem;
+            "
+          >
+            <i class="fas fa-shield-alt"></i> امنیت بالا
+          </div>
+          <div
+            style="
+              background: #eef2ff;
+              border-radius: 3rem;
+              padding: 0.5rem 1.2rem;
+            "
+          >
+            <i class="fas fa-tachometer-alt"></i> سرعت فوق‌العاده
+          </div>
+          <div
+            style="
+              background: #eef2ff;
+              border-radius: 3rem;
+              padding: 0.5rem 1.2rem;
+            "
+          >
+            <i class="fas fa-mobile-alt"></i> واکنش‌گرا در موبایل
+          </div>
+          <div
+            style="
+              background: #eef2ff;
+              border-radius: 3rem;
+              padding: 0.5rem 1.2rem;
+            "
+          >
+            <i class="fas fa-language"></i> پشتیبانی کامل از فارسی
+          </div>
+        </div>
+      </div>
+    </main>
 
-<script>
-    (function(){
-        // DOM elements
-        const startBtn = document.getElementById('proStartBtn');
-        const stopBtn = document.getElementById('proStopBtn');
-        const langSelect = document.getElementById('proLangSelect');
-        const continuousCheck = document.getElementById('proContinuous');
-        const finalTextArea = document.getElementById('proFinalText');
-        const interimSpan = document.getElementById('interimTextSpan');
-        const statusBadge = document.getElementById('proStatusBadge');
-        const statusMsgSpan = document.getElementById('statusMsg');
-        const statsSpan = document.getElementById('liveStats');
-        const copyBtn = document.getElementById('copyFinalPro');
-        const downloadTxt = document.getElementById('downloadTxtPro');
-        const downloadDoc = document.getElementById('downloadDocPro');
-        const clearBtn = document.getElementById('clearFinalPro');
-        const timerElement = document.getElementById('recordTimer');
-        const themeSwitcher = document.getElementById('themeSwitcher');
-        const waveCanvas = document.getElementById('waveCanvas');
-        const ctx = waveCanvas.getContext('2d');
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="logo" style="font-size: 1.4rem">
+            <i class="fas fa-toolbox"></i> ابزارک
+          </div>
+          <div class="footer-links">
+            <a href="#">درباره ما</a>
+            <a href="#">تماس با ما</a>
+            <a href="#">حریم خصوصی</a>
+            <a href="#">شرایط استفاده</a>
+          </div>
+          <div>
+            <a href="#" style="margin-left: 0.8rem"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a href="#" style="margin-left: 0.8rem"
+              ><i class="fab fa-telegram"></i
+            ></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+        <div class="copyright">
+          <i class="far fa-copyright"></i> ۱۴۰۴ تمامی حقوق برای ابزارک محفوظ
+          است.
+        </div>
+      </div>
+    </footer>
 
-        // variables state
-        let recognition = null;
-        let isRecording = false;
-        let mediaStream = null;
-        let audioContext = null;
-        let analyserNode = null;
-        let animationId = null;
-        let recordStartTime = 0;
-        let timerInterval = null;
-        let finalTextBuffer = "";
+    <script>
+      (function () {
+        const searchInput = document.getElementById("searchInput");
+        const searchBtn = document.getElementById("searchBtn");
+        const toolsGrid = document.getElementById("toolsGrid");
+        const allTools = Array.from(document.querySelectorAll(".tool-link"));
 
-        // تابع نمایش توست حرفه‌ای
-        function showEliteToast(msg, isError = false) {
-            const toast = document.getElementById('eliteToast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            toast.style.background = isError ? '#e53e3e' : '#1e293b';
-            setTimeout(() => toast.classList.remove('show'), 2700);
-        }
+        // تابع فیلتر کردن ابزارها
+        function filterTools(searchTerm) {
+          const term = searchTerm.trim().toLowerCase();
+          let hasVisible = false;
 
-        // آمار کلمات و کاراکتر
-        function updateStatsFromText() {
-            const text = finalTextArea.value;
-            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
-            const chars = text.length;
-            statsSpan.innerHTML = `<i class="fas fa-chart-line"></i> کلمات: ${words.toLocaleString('fa-IR')} | کاراکتر: ${chars.toLocaleString('fa-IR')}`;
-            localStorage.setItem('dictation_pro_backup', text);
-        }
+          allTools.forEach((tool) => {
+            const title =
+              tool.getAttribute("data-tool-name") ||
+              tool.querySelector("h3")?.innerText ||
+              "";
+            const desc =
+              tool.getAttribute("data-tool-desc") ||
+              tool.querySelector("p")?.innerText ||
+              "";
+            const matches =
+              term === "" || title.includes(term) || desc.includes(term);
 
-        finalTextArea.addEventListener('input', () => {
-            updateStatsFromText();
-            finalTextBuffer = finalTextArea.value;
-        });
-
-        // بارگذاری پشتیبان محلی
-        function loadBackupSafely() {
-            const saved = localStorage.getItem('dictation_pro_backup');
-            if(saved && saved.trim().length > 0) {
-                if(confirm('متن قبلی در حافظه مرورگر وجود دارد. بازیابی شود؟')) {
-                    finalTextArea.value = saved;
-                    finalTextBuffer = saved;
-                    updateStatsFromText();
-                    showEliteToast('متن قبلی بازیابی شد', false);
-                } else {
-                    localStorage.removeItem('dictation_pro_backup');
-                }
-            }
-        }
-
-        // افزودن متن نهایی (تشخیص قطعی)
-        function addFinalSegment(newText) {
-            if(!newText.trim()) return;
-            let current = finalTextArea.value;
-            let space = (current.length > 0 && !current.endsWith(' ') && !current.endsWith('\n')) ? ' ' : '';
-            let updated = current + space + newText.trim();
-            finalTextArea.value = updated;
-            finalTextBuffer = updated;
-            updateStatsFromText();
-            finalTextArea.scrollTop = finalTextArea.scrollHeight;
-        }
-
-        // ---------- VU meter پیشرفته با موج گرافیکی
-        async function startVUAnalysis(stream) {
-            if(audioContext) await audioContext.close();
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyserNode = audioContext.createAnalyser();
-            analyserNode.fftSize = 256;
-            const source = audioContext.createMediaStreamSource(stream);
-            source.connect(analyserNode);
-            const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
-            function drawWave() {
-                if(!isRecording || !analyserNode) {
-                    if(animationId) cancelAnimationFrame(animationId);
-                    return;
-                }
-                analyserNode.getByteFrequencyData(dataArray);
-                let maxLevel = 0;
-                for(let i=0;i<dataArray.length;i++) maxLevel = Math.max(maxLevel, dataArray[i]);
-                let percent = Math.min(100, (maxLevel / 255) * 100);
-                if(ctx && waveCanvas) {
-                    const w = waveCanvas.clientWidth;
-                    const h = waveCanvas.clientHeight;
-                    waveCanvas.width = w;
-                    waveCanvas.height = h;
-                    ctx.clearRect(0, 0, w, h);
-                    ctx.fillStyle = '#2c7a4d';
-                    let activeWidth = (percent / 100) * w;
-                    ctx.fillRect(0, 0, activeWidth, h);
-                    ctx.fillStyle = 'rgba(0,0,0,0.2)';
-                    ctx.fillRect(activeWidth, 0, w - activeWidth, h);
-                    if(percent > 70) ctx.fillStyle = '#f6ad55';
-                    ctx.fillRect(0, 0, activeWidth, h);
-                }
-                animationId = requestAnimationFrame(drawWave);
-            }
-            drawWave();
-            await audioContext.resume();
-        }
-
-        function stopVUAndStream() {
-            if(animationId) cancelAnimationFrame(animationId);
-            if(audioContext) {
-                audioContext.close().catch(e=>console.warn);
-                audioContext = null;
-            }
-            if(ctx && waveCanvas) {
-                ctx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
-            }
-        }
-
-        // تایمر ضبط
-        function startTimer() {
-            recordStartTime = Date.now();
-            if(timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if(!isRecording) return;
-                const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
-                const mins = Math.floor(elapsed / 60);
-                const secs = elapsed % 60;
-                timerElement.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-            }, 1000);
-        }
-        function stopTimer() {
-            if(timerInterval) clearInterval(timerInterval);
-            timerElement.textContent = "00:00";
-        }
-
-        // توقف کامل ضبط
-        function haltRecordingSession() {
-            if(recognition) {
-                try { recognition.abort(); } catch(e) {}
-                recognition = null;
-            }
-            if(mediaStream) {
-                mediaStream.getTracks().forEach(t => t.stop());
-                mediaStream = null;
-            }
-            stopVUAndStream();
-            isRecording = false;
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            statusBadge.classList.remove('recording');
-            statusMsgSpan.innerHTML = 'آماده';
-            statusBadge.querySelector('i').className = 'fas fa-microphone-slash';
-            interimSpan.innerHTML = '—';
-            stopTimer();
-        }
-
-        // ساخت شیء تشخیص گفتار گوگل
-        function buildSpeechRecognition() {
-            const SpeechRecog = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!SpeechRecog) {
-                showEliteToast('مرورگر شما پشتیبانی نمی‌کند. از Chrome، Edge یا Safari استفاده کنید.', true);
-                return null;
-            }
-            const recog = new SpeechRecog();
-            recog.continuous = continuousCheck.checked;
-            recog.interimResults = true;
-            recog.lang = langSelect.value;
-
-            recog.onstart = () => {
-                isRecording = true;
-                startBtn.disabled = true;
-                stopBtn.disabled = false;
-                statusBadge.classList.add('recording');
-                statusMsgSpan.innerHTML = 'در حال ضبط با موتور گوگل';
-                statusBadge.querySelector('i').className = 'fas fa-microphone';
-                if(mediaStream) startVUAnalysis(mediaStream);
-                startTimer();
-            };
-
-            recog.onend = () => {
-                if(isRecording && continuousCheck.checked) {
-                    try { if(recognition) recognition.start(); } catch(e) { haltRecordingSession(); }
-                } else {
-                    haltRecordingSession();
-                }
-            };
-
-            recog.onresult = (event) => {
-                let finalText = '';
-                let interimPart = '';
-                for(let i = event.resultIndex; i < event.results.length; i++) {
-                    const transcript = event.results[i][0].transcript;
-                    if(event.results[i].isFinal) {
-                        finalText += transcript + ' ';
-                    } else {
-                        interimPart += transcript;
-                    }
-                }
-                if(finalText.trim().length > 0) {
-                    addFinalSegment(finalText.trim());
-                }
-                if(interimPart) {
-                    interimSpan.innerHTML = interimPart + ' <span class="blink-cursor"></span>';
-                } else {
-                    interimSpan.innerHTML = '—';
-                }
-            };
-
-            recog.onerror = (errEvent) => {
-                let errorMsg = '';
-                if(errEvent.error === 'not-allowed') errorMsg = 'دسترسی به میکروفون داده نشد.';
-                else if(errEvent.error === 'network') errorMsg = 'خطای شبکه - اتصال اینترنت ضروری است.';
-                else if(errEvent.error === 'no-speech') errorMsg = 'صدایی تشخیص داده نشد.';
-                else errorMsg = `خطا: ${errEvent.error}`;
-                showEliteToast(errorMsg, true);
-                haltRecordingSession();
-            };
-            return recog;
-        }
-
-        // شروع ضبط
-        async function startProRecording() {
-            if(isRecording) return;
-            interimSpan.innerHTML = 'درخواست میکروفون...';
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaStream = stream;
-                recognition = buildSpeechRecognition();
-                if(!recognition) {
-                    if(mediaStream) mediaStream.getTracks().forEach(t=>t.stop());
-                    return;
-                }
-                recognition.start();
-            } catch(err) {
-                let msg = 'میکروفون در دسترس نیست. مجوزها را بررسی کنید.';
-                if(err.name === 'NotAllowedError') msg = 'اجازه دسترسی به میکروفون داده نشد.';
-                showEliteToast(msg, true);
-                startBtn.disabled = false;
-            }
-        }
-
-        function stopProRecording() {
-            if(recognition) {
-                try { recognition.stop(); } catch(e){}
-            }
-            haltRecordingSession();
-            showEliteToast('ضبط متوقف شد. متن قابل ویرایش است.', false);
-        }
-
-        // رخداد دکمه‌ها
-        startBtn.addEventListener('click', startProRecording);
-        stopBtn.addEventListener('click', stopProRecording);
-
-        // تغییر زبان / حالت پیوسته
-        async function reconfigIfNeeded() {
-            if(isRecording) {
-                stopProRecording();
-                await new Promise(r => setTimeout(r, 280));
-                startProRecording();
-            } else if(recognition) {
-                recognition.lang = langSelect.value;
-            }
-        }
-        langSelect.addEventListener('change', reconfigIfNeeded);
-        continuousCheck.addEventListener('change', () => {
-            if(isRecording) {
-                stopProRecording();
-                setTimeout(() => startProRecording(), 200);
-            }
-        });
-
-        // کپی، دانلود TXT، دانلود Word (با محتوای HTML ساده)
-        copyBtn.addEventListener('click', () => {
-            const txt = finalTextArea.value;
-            if(!txt.trim()) return showEliteToast('متن موجود نیست');
-            navigator.clipboard.writeText(txt).then(() => showEliteToast('متن کپی شد 📋'));
-        });
-        downloadTxt.addEventListener('click', () => {
-            const txt = finalTextArea.value;
-            if(!txt.trim()) return showEliteToast('متنی برای دانلود وجود ندارد');
-            const blob = new Blob([txt], {type: 'text/plain'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `speech_transcript_${new Date().toISOString().slice(0,19)}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showEliteToast('فایل TXT دانلود شد');
-        });
-        downloadDoc.addEventListener('click', () => {
-            const txt = finalTextArea.value;
-            if(!txt.trim()) return showEliteToast('متنی برای خروجی Word وجود ندارد');
-            const htmlContent = `<!DOCTYPE html><html><meta charset="UTF-8"><title>گفتار به متن</title><body style="font-family:Vazir, sans-serif; padding:2rem;"><pre style="white-space:pre-wrap">${txt}</pre></body></html>`;
-            const blob = new Blob([htmlContent], {type: 'application/msword'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `dictation_output.doc`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showEliteToast('فایل Word (doc) ذخیره شد');
-        });
-        clearBtn.addEventListener('click', () => {
-            if(confirm('تمام متن پاک می‌شود. ادامه می‌دهید؟')) {
-                finalTextArea.value = '';
-                finalTextBuffer = '';
-                updateStatsFromText();
-                showEliteToast('متن با موفقیت پاک شد');
-            }
-        });
-
-        // تم تاریک/روشن
-        function setTheme(theme) {
-            if(theme === 'dark') document.body.classList.add('dark');
-            else document.body.classList.remove('dark');
-            localStorage.setItem('dictation_theme', theme);
-            const icon = themeSwitcher.querySelector('i');
-            const span = themeSwitcher.querySelector('span');
-            if(theme === 'dark') {
-                icon.className = 'fas fa-sun';
-                span.innerText = 'تم روشن';
+            if (matches) {
+              tool.style.display = "";
+              hasVisible = true;
             } else {
-                icon.className = 'fas fa-moon';
-                span.innerText = 'تم شب';
+              tool.style.display = "none";
             }
-        }
-        const savedTheme = localStorage.getItem('dictation_theme');
-        if(savedTheme === 'dark') setTheme('dark');
-        else setTheme('light');
-        themeSwitcher.addEventListener('click', () => {
-            const isDark = document.body.classList.contains('dark');
-            setTheme(isDark ? 'light' : 'dark');
-        });
+          });
 
-        // بررسی پشتیبانی مرورگر
-        if(!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-            startBtn.disabled = true;
-            showEliteToast('مرورگر شما از API تشخیص گفتار پشتیبانی نمی‌کند.', true);
-            document.querySelector('.info-footer').innerHTML = '<span>⚠️ لطفاً از Chrome، Edge یا Safari جدید استفاده کنید.</span>';
-        } else {
-            startBtn.disabled = false;
-            loadBackupSafely();
-            updateStatsFromText();
+          // حذف پیام قبلی اگر وجود داشته باشد
+          const existingMsg = document.querySelector(".no-results");
+          if (existingMsg) existingMsg.remove();
+
+          if (!hasVisible && term !== "") {
+            const noResultMsg = document.createElement("div");
+            noResultMsg.className = "no-results";
+            noResultMsg.innerHTML = `<i class="fas fa-search"></i> هیچ ابزاری با عبارت «${term}» یافت نشد.<br>لطفاً عبارت دیگری جستجو کنید.`;
+            toolsGrid.appendChild(noResultMsg);
+          }
         }
 
-        window.addEventListener('beforeunload', () => {
-            if(finalTextArea.value.trim()) localStorage.setItem('dictation_pro_backup', finalTextArea.value);
+        // اجرای جستجو با کلیک دکمه
+        function performSearch() {
+          filterTools(searchInput.value);
+        }
+
+        searchBtn.addEventListener("click", performSearch);
+        searchInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") performSearch();
         });
-    })();
-</script>
-</body>
+
+        // اگر جستجو خالی بود و دکمه زده شد، همه را نشان بده
+        // برای بازنشانی، کاربر می‌تواند جعبه را خالی کند و دوباره جستجو بزند
+
+        // مدیریت کلیک روی ابزارهای "به زودی"
+        const comingSoonLinks = document.querySelectorAll(".coming-soon");
+        comingSoonLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            alert(
+              "✨ این ابزار به زودی در ابزارک فعال می‌شود. لطفاً صبور باشید.",
+            );
+          });
+        });
+
+        // خبرنامه
+        const newsletterBtn = document.getElementById("newsletterBtn");
+        if (newsletterBtn) {
+          newsletterBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            alert("📧 به زودی صفحه عضویت در خبرنامه فعال می‌شود.");
+          });
+        }
+
+        // جلوگیری از کلیک پیش‌فرض روی لینک‌های هدر که فعلاً فعال نیستند
+        const headerLinks = document.querySelectorAll(
+          ".nav-links a, .footer-links a, .footer-content a",
+        );
+        headerLinks.forEach((link) => {
+          if (link.getAttribute("href") === "#") {
+            link.addEventListener("click", (e) => {
+              e.preventDefault();
+              alert("🔧 این بخش در حال آماده‌سازی است.");
+            });
+          }
+        });
+      })();
+    </script>
+  </body>
 </html>
