@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>مقاله | ابزارک</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Vazirmatn", "Tahoma", sans-serif;
+        background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+        color: #0f172a;
+        line-height: 1.7;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+      .header {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(4px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        border-bottom: 1px solid #e2e8f0;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.8rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+      .logo i {
+        color: #3b82f6;
+        font-size: 2rem;
+        background: none;
+      }
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .nav-links a {
+        text-decoration: none;
+        font-weight: 500;
+        color: #334155;
+      }
+      .nav-links a:hover {
+        color: #2563eb;
+      }
+      .btn-outline {
+        border: 1px solid #cbd5e1;
+        padding: 0.5rem 1.2rem;
+        border-radius: 2rem;
+        background: white;
+      }
+      .post-header {
+        text-align: center;
+        padding: 2rem 0 1rem;
+      }
+      .post-category {
+        display: inline-block;
+        background: #e0e7ff;
+        color: #1e40af;
+        padding: 0.2rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .post-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 1rem 0 0.5rem;
+        line-height: 1.3;
+      }
+      .post-meta {
+        color: #64748b;
+        font-size: 0.85rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .post-content {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eef2ff;
+        margin-bottom: 2rem;
+      }
+      .post-content p {
+        margin-bottom: 1rem;
+      }
+      .post-content a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #e2e8f0;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        color: #1e293b;
+        font-weight: 500;
+        margin-bottom: 1rem;
+      }
+      .footer {
+        background: #ffffffcc;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 2rem;
+        padding: 2rem 0;
+        text-align: center;
+        color: #64748b;
+      }
+      @media (max-width: 768px) {
+        .nav {
+          flex-direction: column;
+          text-align: center;
+        }
+        .post-title {
+          font-size: 1.6rem;
+        }
+        .post-content {
+          padding: 1.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="nav">
+          <div class="logo">
+            <i class="fas fa-toolbox"></i>
+            <span>ابزارک</span>
+          </div>
+          <div class="nav-links">
+            <a href="index.html">خانه</a>
+            <a href="#">ابزارها</a>
+            <a href="blog.html">بلاگ</a>
+            <a href="#">تعرفه</a>
+            <a href="#" class="btn-outline"
+              ><i class="fas fa-user"></i> ورود / ثبت‌نام</a
+            >
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <a href="blog.html" class="back-link"
+          ><i class="fas fa-arrow-right"></i> بازگشت به بلاگ</a
+        >
+        <div id="postContainer" class="post-content">
+          <div style="text-align: center; padding: 2rem">
+            در حال بارگذاری مقاله...
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>
+          <i class="far fa-copyright"></i> ۱۴۰۴ تمامی حقوق برای ابزارک محفوظ
+          است.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // داده‌های مشابه blog.html (برای نمونه - در دنیای واقعی از API یا دیتابیس می‌خوانیم)
+      const postsData = [
+        {
+          id: 1,
+          title: "آموزش تبدیل متن به PDF در ابزارک",
+          category: "آموزش",
+          date: "۲۵ خرداد ۱۴۰۴",
+          views: "۱,۲۰۰",
+          fullContent:
+            "<p>برای تبدیل متن به PDF کافی است به صفحه <a href='text-to-pdf.html'>متن به PDF</a> بروید و متن خود را وارد کنید. سپس می‌توانید تنظیمات حاشیه، فونت و کیفیت را تغییر دهید و در نهایت فایل PDF را دانلود کنید.</p><p>این ابزار کاملاً در مرورگر شما اجرا می‌شود و اطلاعات به سرور ارسال نمی‌شود.</p><p>همچنین می‌توانید از تنظیمات پیشرفته مانند افزودن هدر و فوتر، شماره صفحه و واترمارک استفاده کنید.</p>",
+        },
+        {
+          id: 2,
+          title: "چگونه حجم تصاویر را بدون افت کیفیت کاهش دهیم؟",
+          category: "ترفند",
+          date: "۱۸ خرداد ۱۴۰۴",
+          views: "۸۵۰",
+          fullContent:
+            "<p>ابزار <a href='tools/resize-compress-image.html'>تغییر سایز و فشرده‌سازی تصویر</a> این امکان را می‌دهد تا ابعاد و حجم تصاویر را بهینه کنید. کافی است تصویر را آپلود کرده و عرض/ارتفاع دلخواه یا کیفیت را تنظیم کنید.</p><p>خروجی با فرمت دلخواه (JPEG, PNG, WebP) قابل دانلود است. برای نتیجه بهتر، کیفیت را بین ۸۰ تا ۹۰ تنظیم کنید.</p>",
+        },
+        {
+          id: 3,
+          title: "آشنایی با ابزار تبدیل صدا به متن ابزارک",
+          category: "معرفی ابزار",
+          date: "۱۰ خرداد ۱۴۰۴",
+          views: "۲,۱۰۰",
+          fullContent:
+            "<p>ابزار <a href='speech-to-text.html'>صوت به متن</a> از Web Speech API استفاده می‌کند و با کلیک روی دکمه میکروفون، صدای شما را به متن تبدیل می‌کند. این ابزار برای جلسات، مصاحبه‌ها و یادداشت‌برداری سریع بسیار مفید است.</p><p>برای بهترین دقت، از میکروفون با کیفیت استفاده کنید و در محیط سکوت صحبت کنید.</p>",
+        },
+        {
+          id: 4,
+          title: "راهنمای استفاده از تبدیل‌کننده واحدها",
+          category: "آموزش",
+          date: "۱ خرداد ۱۴۰۴",
+          views: "۵۴۰",
+          fullContent:
+            "<p>ابزار <a href='tools/unit-converter.html'>تبدیل واحدها</a> شامل ۱۸ دسته مختلف و بیش از ۱۰۰ واحد است. کافی است مقدار، واحد مبدأ و مقصد را انتخاب کنید تا نتیجه فوری نمایش داده شود.</p><p>علاوه بر نتیجه اصلی، جدولی از تبدیل به سایر واحدهای همان دسته نیز نمایش داده می‌شود.</p>",
+        },
+        {
+          id: 5,
+          title: "نکات طلایی فشرده‌سازی تصاویر برای وب",
+          category: "ترفند",
+          date: "۲۵ اردیبهشت ۱۴۰۴",
+          views: "۳۲۰",
+          fullContent:
+            "<p>استفاده از فرمت WebP، تعیین ابعاد متناسب با نمایشگر و کاهش کیفیت به میزان مناسب (مثلاً ۸۵٪) می‌تواند حجم تصاویر را تا ۷۰٪ کاهش دهد. ابزارک این کار را خودکار انجام می‌دهد.</p><p>همچنین برای بهبود سئو، حتماً از متن جایگزین (alt) استفاده کنید.</p>",
+        },
+      ];
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const postId = parseInt(urlParams.get("id"));
+      const post = postsData.find((p) => p.id === postId);
+
+      const container = document.getElementById("postContainer");
+      if (post) {
+        document.title = `${post.title} | ابزارک`;
+        container.innerHTML = `
+                <div class="post-header">
+                    <span class="post-category">${post.category}</span>
+                    <h1 class="post-title">${post.title}</h1>
+                    <div class="post-meta">
+                        <span><i class="fas fa-calendar-alt"></i> ${post.date}</span>
+                        <span><i class="fas fa-eye"></i> ${post.views} بازدید</span>
+                    </div>
+                </div>
+                ${post.fullContent}
+                <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; text-align: center;">
+                    <a href="blog.html" class="back-link" style="background: none; border: 1px solid #cbd5e1;">🔙 بازگشت به لیست مقالات</a>
+                </div>
+            `;
+      } else {
+        container.innerHTML =
+          '<div style="text-align:center; padding:3rem;">❌ مقاله مورد نظر یافت نشد. <a href="blog.html">بازگشت به بلاگ</a></div>';
+      }
+    </script>
+  </body>
+</html>
