@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>تبدیل واحدهای اندازه گیری | ابزارک</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Vazirmatn", "Tahoma", sans-serif;
+        background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1rem;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        color: #1e293b;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e2e8f0;
+      }
+      .back-link:hover {
+        background: #f8fafc;
+        transform: translateX(-4px);
+      }
+      .tools-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+      }
+      .card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eef2ff;
+      }
+      h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.2rem;
+        border-right: 4px solid #3b82f6;
+        padding-right: 0.8rem;
+      }
+      .control-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+        background: #f8fafc;
+        padding: 0.6rem;
+        border-radius: 1rem;
+      }
+      .control-group label {
+        font-weight: 600;
+        min-width: 100px;
+      }
+      select,
+      input {
+        font-family: inherit;
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.8rem;
+        border: 1px solid #cbd5e1;
+        background: white;
+        flex: 1;
+      }
+      input {
+        text-align: left;
+        direction: ltr;
+      }
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+      .result-box {
+        background: #fefefe;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1rem;
+        text-align: center;
+        color: #475569;
+      }
+      .result-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        direction: ltr;
+        text-align: center;
+      }
+      .result-unit {
+        font-size: 1rem;
+        color: #64748b;
+        margin-top: 0.5rem;
+      }
+      .swap-btn {
+        background: #e2e8f0;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.3rem 0.8rem;
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+      .other-units-table {
+        margin-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 1rem;
+      }
+      .other-units-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 0.8rem;
+        text-align: center;
+      }
+      .units-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 0.5rem;
+        max-height: 250px;
+        overflow-y: auto;
+        padding: 0.2rem;
+      }
+      .unit-item {
+        background: #f8fafc;
+        border-radius: 0.6rem;
+        padding: 0.4rem 0.6rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 0.85rem;
+        direction: ltr;
+        text-align: left;
+      }
+      .unit-label {
+        font-weight: 500;
+        color: #334155;
+      }
+      .unit-value {
+        font-weight: 600;
+        color: #1e293b;
+      }
+      @media (max-width: 800px) {
+        .tools-panel {
+          grid-template-columns: 1fr;
+        }
+      }
+      footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #64748b;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="../index.html" class="back-link"
+        ><i class="fas fa-arrow-right"></i> بازگشت به ابزارک</a
+      >
+      <div class="tools-panel">
+        <div class="card">
+          <h2><i class="fas fa-sliders-h"></i> تنظیمات تبدیل</h2>
+          <div class="control-group">
+            <label>📊 دسته‌بندی:</label>
+            <select id="categorySelect"></select>
+          </div>
+          <div class="control-group">
+            <label>🔢 مقدار ورودی:</label>
+            <input
+              type="number"
+              id="inputValue"
+              value="1"
+              step="any"
+              placeholder="مقدار را وارد کنید"
+            />
+          </div>
+          <div class="control-group">
+            <label>📤 از:</label>
+            <select id="fromUnit"></select>
+            <button id="swapBtn" class="swap-btn">
+              <i class="fas fa-exchange-alt"></i> جابجایی
+            </button>
+          </div>
+          <div class="control-group">
+            <label>📥 به:</label>
+            <select id="toUnit"></select>
+          </div>
+          <button id="convertBtn" class="btn-primary">
+            <i class="fas fa-calculator"></i> تبدیل
+          </button>
+        </div>
+        <div class="card">
+          <h2><i class="fas fa-magic"></i> نتیجه تبدیل</h2>
+          <div id="resultArea" class="result-box">
+            <div style="color: #94a3b8">
+              <i class="fas fa-exchange-alt" style="font-size: 2rem"></i>
+              <p>نتیجه تبدیل در اینجا نمایش داده می‌شود</p>
+            </div>
+          </div>
+          <div
+            id="otherUnitsArea"
+            class="other-units-table"
+            style="display: none"
+          >
+            <div class="other-units-title">
+              🔁 تبدیل <span id="otherUnitsCategoryName"></span> به سایر واحدها
+            </div>
+            <div id="unitsGrid" class="units-grid"></div>
+          </div>
+        </div>
+      </div>
+      <footer><i class="fas fa-lock"></i> تبدیل دقیق با بالاترین دقت</footer>
+    </div>
+
+    <script>
+      // ========== تعریف کامل واحدها برای هر دسته (کامل‌ترین نسخه) ==========
+      const conversionData = {
+        temperature: {
+          name: "دما",
+          units: ["celsius", "fahrenheit", "kelvin"],
+          labels: ["سلسیوس (°C)", "فارنهایت (°F)", "کلوین (K)"],
+          convert: function (value, from, to) {
+            // تبدیل به سلسیوس
+            let celsius;
+            if (from === "celsius") celsius = value;
+            else if (from === "fahrenheit") celsius = ((value - 32) * 5) / 9;
+            else if (from === "kelvin") celsius = value - 273.15;
+            // تبدیل از سلسیوس به مقصد
+            if (to === "celsius") return celsius;
+            else if (to === "fahrenheit") return (celsius * 9) / 5 + 32;
+            else if (to === "kelvin") return celsius + 273.15;
+            return value;
+          },
+          getAllConversions: function (value, fromUnit) {
+            // تبدیل مقدار ورودی به تمام واحدهای این دسته
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        length: {
+          name: "طول",
+          units: [
+            "nm",
+            "um",
+            "mm",
+            "cm",
+            "dm",
+            "m",
+            "km",
+            "in",
+            "ft",
+            "yd",
+            "mile",
+            "nmi",
+          ],
+          labels: [
+            "نانومتر (nm)",
+            "میکرومتر (µm)",
+            "میلی‌متر (mm)",
+            "سانتی‌متر (cm)",
+            "دسی‌متر (dm)",
+            "متر (m)",
+            "کیلومتر (km)",
+            "اینچ (in)",
+            "فوت (ft)",
+            "یارد (yd)",
+            "مایل (mile)",
+            "مایل دریایی (nmi)",
+          ],
+          factor: {
+            nm: 1e-9,
+            um: 1e-6,
+            mm: 0.001,
+            cm: 0.01,
+            dm: 0.1,
+            m: 1,
+            km: 1000,
+            in: 0.0254,
+            ft: 0.3048,
+            yd: 0.9144,
+            mile: 1609.344,
+            nmi: 1852,
+          },
+          convert: function (value, from, to) {
+            const meterValue = value * this.factor[from];
+            return meterValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        weight: {
+          name: "وزن/جرم",
+          units: [
+            "ug",
+            "mg",
+            "cg",
+            "dg",
+            "g",
+            "dag",
+            "hg",
+            "kg",
+            "t",
+            "oz",
+            "lb",
+            "st",
+          ],
+          labels: [
+            "میکروگرم (µg)",
+            "میلی‌گرم (mg)",
+            "سانتی‌گرم (cg)",
+            "دسی‌گرم (dg)",
+            "گرم (g)",
+            "دکاگرم (dag)",
+            "هکتوگرم (hg)",
+            "کیلوگرم (kg)",
+            "تن (t)",
+            "اونس (oz)",
+            "پوند (lb)",
+            "استون (st)",
+          ],
+          factor: {
+            ug: 1e-9,
+            mg: 1e-6,
+            cg: 1e-5,
+            dg: 1e-4,
+            g: 0.001,
+            dag: 0.01,
+            hg: 0.1,
+            kg: 1,
+            t: 1000,
+            oz: 0.0283495,
+            lb: 0.453592,
+            st: 6.35029,
+          },
+          convert: function (value, from, to) {
+            const kgValue = value * this.factor[from];
+            return kgValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        volume: {
+          name: "حجم",
+          units: [
+            "ml",
+            "cl",
+            "dl",
+            "l",
+            "hl",
+            "m3",
+            "in3",
+            "ft3",
+            "gal_us",
+            "gal_uk",
+            "qt_us",
+            "pt_us",
+          ],
+          labels: [
+            "میلی‌لیتر (mL)",
+            "سانتی‌لیتر (cL)",
+            "دسی‌لیتر (dL)",
+            "لیتر (L)",
+            "هکتولیتر (hL)",
+            "متر مکعب (m³)",
+            "اینچ مکعب (in³)",
+            "فوت مکعب (ft³)",
+            "گالن آمریکا (gal US)",
+            "گالن بریتانیا (gal UK)",
+            "کوارت آمریکا (qt US)",
+            "پاینت آمریکا (pt US)",
+          ],
+          factor: {
+            ml: 0.001,
+            cl: 0.01,
+            dl: 0.1,
+            l: 1,
+            hl: 100,
+            m3: 1000,
+            in3: 0.0163871,
+            ft3: 28.3168,
+            gal_us: 3.78541,
+            gal_uk: 4.54609,
+            qt_us: 0.946353,
+            pt_us: 0.473176,
+          },
+          convert: function (value, from, to) {
+            const literValue = value * this.factor[from];
+            return literValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        area: {
+          name: "مساحت",
+          units: [
+            "mm2",
+            "cm2",
+            "dm2",
+            "m2",
+            "dam2",
+            "hm2",
+            "km2",
+            "ha",
+            "acre",
+            "ft2",
+            "yd2",
+            "mile2",
+          ],
+          labels: [
+            "میلی‌متر مربع (mm²)",
+            "سانتی‌متر مربع (cm²)",
+            "دسی‌متر مربع (dm²)",
+            "متر مربع (m²)",
+            "دکامتر مربع (dam²)",
+            "هکتومتر مربع (hm²)",
+            "کیلومتر مربع (km²)",
+            "هکتار (ha)",
+            "جریب (acre)",
+            "فوت مربع (ft²)",
+            "یارد مربع (yd²)",
+            "مایل مربع (mile²)",
+          ],
+          factor: {
+            mm2: 1e-6,
+            cm2: 0.0001,
+            dm2: 0.01,
+            m2: 1,
+            dam2: 100,
+            hm2: 10000,
+            km2: 1e6,
+            ha: 10000,
+            acre: 4046.86,
+            ft2: 0.092903,
+            yd2: 0.836127,
+            mile2: 2.58999e6,
+          },
+          convert: function (value, from, to) {
+            const m2Value = value * this.factor[from];
+            return m2Value / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        time: {
+          name: "زمان",
+          units: [
+            "ns",
+            "us",
+            "ms",
+            "s",
+            "min",
+            "h",
+            "d",
+            "wk",
+            "mo",
+            "yr",
+            "decade",
+            "century",
+          ],
+          labels: [
+            "نانوثانیه (ns)",
+            "میکروثانیه (µs)",
+            "میلی‌ثانیه (ms)",
+            "ثانیه (s)",
+            "دقیقه (min)",
+            "ساعت (h)",
+            "روز (d)",
+            "هفته (wk)",
+            "ماه (mo)",
+            "سال (yr)",
+            "دهه (decade)",
+            "قرن (century)",
+          ],
+          factor: {
+            ns: 1e-9,
+            us: 1e-6,
+            ms: 0.001,
+            s: 1,
+            min: 60,
+            h: 3600,
+            d: 86400,
+            wk: 604800,
+            mo: 2592000,
+            yr: 31536000,
+            decade: 315360000,
+            century: 3153600000,
+          },
+          convert: function (value, from, to) {
+            const secondsValue = value * this.factor[from];
+            return secondsValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        speed: {
+          name: "سرعت",
+          units: ["ms", "kmh", "mph", "kn", "fts"],
+          labels: [
+            "متر بر ثانیه (m/s)",
+            "کیلومتر بر ساعت (km/h)",
+            "مایل بر ساعت (mph)",
+            "گره (kn)",
+            "فوت بر ثانیه (ft/s)",
+          ],
+          factor: {
+            ms: 1,
+            kmh: 0.27777778,
+            mph: 0.44704,
+            kn: 0.514444,
+            fts: 0.3048,
+          },
+          convert: function (value, from, to) {
+            const msValue = value * this.factor[from];
+            return msValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        pressure: {
+          name: "فشار",
+          units: [
+            "pa",
+            "hpa",
+            "kpa",
+            "bar",
+            "mbar",
+            "atm",
+            "mmhg",
+            "psi",
+            "torr",
+          ],
+          labels: [
+            "پاسکال (Pa)",
+            "هکتوپاسکال (hPa)",
+            "کیلوپاسکال (kPa)",
+            "بار (bar)",
+            "میلی‌بار (mbar)",
+            "اتمسفر (atm)",
+            "میلی‌متر جیوه (mmHg)",
+            "پوند بر اینچ مربع (psi)",
+            "تور (Torr)",
+          ],
+          factor: {
+            pa: 1,
+            hpa: 100,
+            kpa: 1000,
+            bar: 100000,
+            mbar: 100,
+            atm: 101325,
+            mmhg: 133.322,
+            psi: 6894.76,
+            torr: 133.322,
+          },
+          convert: function (value, from, to) {
+            const paValue = value * this.factor[from];
+            return paValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        energy: {
+          name: "انرژی",
+          units: ["j", "kj", "cal", "kcal", "wh", "kwh", "ev", "btu", "therm"],
+          labels: [
+            "ژول (J)",
+            "کیلوژول (kJ)",
+            "کالری (cal)",
+            "کیلوکالری (kcal)",
+            "وات ساعت (Wh)",
+            "کیلووات ساعت (kWh)",
+            "الکترون‌ولت (eV)",
+            "BTU",
+            "ترم (therm)",
+          ],
+          factor: {
+            j: 1,
+            kj: 1000,
+            cal: 4.184,
+            kcal: 4184,
+            wh: 3600,
+            kwh: 3.6e6,
+            ev: 1.602e-19,
+            btu: 1055.06,
+            therm: 1.05506e8,
+          },
+          convert: function (value, from, to) {
+            const jValue = value * this.factor[from];
+            return jValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        power: {
+          name: "توان",
+          units: ["w", "kw", "mw", "hp", "ps"],
+          labels: [
+            "وات (W)",
+            "کیلووات (kW)",
+            "مگاوات (MW)",
+            "اسب بخار (hp)",
+            "اسب بخار متریک (ps)",
+          ],
+          factor: {
+            w: 1,
+            kw: 1000,
+            mw: 1e6,
+            hp: 745.7,
+            ps: 735.5,
+          },
+          convert: function (value, from, to) {
+            const wValue = value * this.factor[from];
+            return wValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        data: {
+          name: "ذخیره‌سازی داده",
+          units: ["b", "kb", "mb", "gb", "tb", "pb", "eb"],
+          labels: [
+            "بایت (B)",
+            "کیلوبایت (KB)",
+            "مگابایت (MB)",
+            "گیگابایت (GB)",
+            "ترابایت (TB)",
+            "پتابایت (PB)",
+            "اگزابایت (EB)",
+          ],
+          factor: {
+            b: 1,
+            kb: 1024,
+            mb: 1048576,
+            gb: 1073741824,
+            tb: 1099511627776,
+            pb: 1125899906842624,
+            eb: 1152921504606846976,
+          },
+          convert: function (value, from, to) {
+            const byteValue = value * this.factor[from];
+            return byteValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        angle: {
+          name: "زاویه",
+          units: ["deg", "rad", "grad", "arcmin", "arcsec"],
+          labels: [
+            "درجه (°)",
+            "رادیان (rad)",
+            "گراد (grad)",
+            "دقیقه قوسی (arcmin)",
+            "ثانیه قوسی (arcsec)",
+          ],
+          factor: {
+            deg: 1,
+            rad: 57.2957795,
+            grad: 0.9,
+            arcmin: 1 / 60,
+            arcsec: 1 / 3600,
+          },
+          convert: function (value, from, to) {
+            const degValue = value * this.factor[from];
+            return degValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        frequency: {
+          name: "فرکانس",
+          units: ["hz", "khz", "mhz", "ghz", "thz"],
+          labels: [
+            "هرتز (Hz)",
+            "کیلوهرتز (kHz)",
+            "مگاهرتز (MHz)",
+            "گیگاهرتز (GHz)",
+            "تراهرتز (THz)",
+          ],
+          factor: {
+            hz: 1,
+            khz: 1000,
+            mhz: 1e6,
+            ghz: 1e9,
+            thz: 1e12,
+          },
+          convert: function (value, from, to) {
+            const hzValue = value * this.factor[from];
+            return hzValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        density: {
+          name: "چگالی",
+          units: ["kgm3", "gcm3", "kgpl", "lbft3"],
+          labels: [
+            "کیلوگرم بر متر مکعب (kg/m³)",
+            "گرم بر سانتی‌متر مکعب (g/cm³)",
+            "کیلوگرم بر لیتر (kg/L)",
+            "پوند بر فوت مکعب (lb/ft³)",
+          ],
+          factor: {
+            kgm3: 1,
+            gcm3: 1000,
+            kgpl: 1000,
+            lbft3: 16.0185,
+          },
+          convert: function (value, from, to) {
+            const kgm3Value = value * this.factor[from];
+            return kgm3Value / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        force: {
+          name: "نیرو",
+          units: ["n", "kn", "kgf", "lbf", "dyn"],
+          labels: [
+            "نیوتن (N)",
+            "کیلونیوتن (kN)",
+            "کیلوگرم-نیرو (kgf)",
+            "پوند-نیرو (lbf)",
+            "داین (dyn)",
+          ],
+          factor: {
+            n: 1,
+            kn: 1000,
+            kgf: 9.80665,
+            lbf: 4.44822,
+            dyn: 1e-5,
+          },
+          convert: function (value, from, to) {
+            const nValue = value * this.factor[from];
+            return nValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        flowrate: {
+          name: "دبی حجمی",
+          units: ["m3s", "ls", "lmin", "m3h", "gpm_us"],
+          labels: [
+            "متر مکعب بر ثانیه (m³/s)",
+            "لیتر بر ثانیه (L/s)",
+            "لیتر بر دقیقه (L/min)",
+            "متر مکعب بر ساعت (m³/h)",
+            "گالن بر دقیقه آمریکا (GPM)",
+          ],
+          factor: {
+            m3s: 1,
+            ls: 0.001,
+            lmin: 1.66667e-5,
+            m3h: 0.00027778,
+            gpm_us: 6.309e-5,
+          },
+          convert: function (value, from, to) {
+            const m3sValue = value * this.factor[from];
+            return m3sValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        viscosity: {
+          name: "لزجت",
+          units: ["pas", "p", "cp", "mpas"],
+          labels: [
+            "پاسکال ثانیه (Pa·s)",
+            "پواز (P)",
+            "سانتی‌پواز (cP)",
+            "میلی‌پاسکال ثانیه (mPa·s)",
+          ],
+          factor: {
+            pas: 1,
+            p: 0.1,
+            cp: 0.001,
+            mpas: 0.001,
+          },
+          convert: function (value, from, to) {
+            const pasValue = value * this.factor[from];
+            return pasValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+        conductivity: {
+          name: "رسانایی الکتریکی",
+          units: ["sm", "msm", "uscm", "mscm"],
+          labels: [
+            "زیمنس بر متر (S/m)",
+            "میلی‌زیمنس بر متر (mS/m)",
+            "میکروزیمنس بر سانتی‌متر (µS/cm)",
+            "میلی‌زیمنس بر سانتی‌متر (mS/cm)",
+          ],
+          factor: {
+            sm: 1,
+            msm: 0.001,
+            uscm: 0.0001,
+            mscm: 0.1,
+          },
+          convert: function (value, from, to) {
+            const smValue = value * this.factor[from];
+            return smValue / this.factor[to];
+          },
+          getAllConversions: function (value, fromUnit) {
+            const results = {};
+            for (let i = 0; i < this.units.length; i++) {
+              const toUnit = this.units[i];
+              results[toUnit] = this.convert(value, fromUnit, toUnit);
+            }
+            return results;
+          },
+        },
+      };
+
+      // ساخت آپشن‌های دسته‌بندی
+      const categorySelect = document.getElementById("categorySelect");
+      for (const [key, data] of Object.entries(conversionData)) {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = data.name;
+        categorySelect.appendChild(option);
+      }
+
+      // عناصر
+      const fromUnitSelect = document.getElementById("fromUnit");
+      const toUnitSelect = document.getElementById("toUnit");
+      const inputValue = document.getElementById("inputValue");
+      const convertBtn = document.getElementById("convertBtn");
+      const swapBtn = document.getElementById("swapBtn");
+      const resultArea = document.getElementById("resultArea");
+      const otherUnitsArea = document.getElementById("otherUnitsArea");
+      const otherUnitsCategoryName = document.getElementById(
+        "otherUnitsCategoryName",
+      );
+      const unitsGrid = document.getElementById("unitsGrid");
+
+      let currentCategory = "length";
+      let currentData = conversionData[currentCategory];
+
+      function loadUnits() {
+        const category = categorySelect.value;
+        currentCategory = category;
+        currentData = conversionData[category];
+        if (!currentData) return;
+
+        fromUnitSelect.innerHTML = "";
+        toUnitSelect.innerHTML = "";
+        for (let i = 0; i < currentData.units.length; i++) {
+          const opt1 = document.createElement("option");
+          opt1.value = currentData.units[i];
+          opt1.textContent = currentData.labels[i];
+          fromUnitSelect.appendChild(opt1);
+          const opt2 = document.createElement("option");
+          opt2.value = currentData.units[i];
+          opt2.textContent = currentData.labels[i];
+          toUnitSelect.appendChild(opt2);
+        }
+        // پیش‌فرض منطقی
+        if (currentCategory === "temperature") {
+          fromUnitSelect.value = "celsius";
+          toUnitSelect.value = "fahrenheit";
+        } else {
+          fromUnitSelect.value = currentData.units[0];
+          toUnitSelect.value = currentData.units[1] || currentData.units[0];
+        }
+        convert();
+      }
+
+      function swapUnits() {
+        const fromVal = fromUnitSelect.value;
+        const toVal = toUnitSelect.value;
+        if (fromVal && toVal) {
+          fromUnitSelect.value = toVal;
+          toUnitSelect.value = fromVal;
+          convert();
+        }
+      }
+
+      function formatNumber(num) {
+        // نمایش تا 10 رقم اعشار بدون trailing zeros اضافی
+        if (Math.abs(num) < 1e-10) return "0";
+        return parseFloat(num.toFixed(10)).toString();
+      }
+
+      function convert() {
+        const value = parseFloat(inputValue.value);
+        if (isNaN(value)) {
+          resultArea.innerHTML =
+            '<div style="color:#94a3b8;"><i class="fas fa-exclamation-triangle"></i><p>لطفاً یک مقدار عددی معتبر وارد کنید</p></div>';
+          otherUnitsArea.style.display = "none";
+          return;
+        }
+        const fromUnit = fromUnitSelect.value;
+        const toUnit = toUnitSelect.value;
+        if (!fromUnit || !toUnit) {
+          resultArea.innerHTML =
+            '<div style="color:#94a3b8;"><i class="fas fa-exclamation-triangle"></i><p>واحدها را انتخاب کنید</p></div>';
+          otherUnitsArea.style.display = "none";
+          return;
+        }
+
+        // تبدیل اصلی
+        let result;
+        if (currentData.convert) {
+          result = currentData.convert(value, fromUnit, toUnit);
+        } else {
+          result = value;
+        }
+
+        const fromLabel =
+          currentData.labels[currentData.units.indexOf(fromUnit)];
+        const toLabel = currentData.labels[currentData.units.indexOf(toUnit)];
+        resultArea.innerHTML = `
+            <div class="result-value">${formatNumber(result)}</div>
+            <div class="result-unit">${toLabel}</div>
+            <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #64748b;">
+                ${formatNumber(value)} ${fromLabel} =
+            </div>
+        `;
+
+        // نمایش تبدیل به سایر واحدهای همان دسته
+        if (currentData.getAllConversions) {
+          const allResults = currentData.getAllConversions(value, fromUnit);
+          unitsGrid.innerHTML = "";
+          for (let i = 0; i < currentData.units.length; i++) {
+            const unitCode = currentData.units[i];
+            const unitLabel = currentData.labels[i];
+            const convertedValue = allResults[unitCode];
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "unit-item";
+            itemDiv.innerHTML = `<span class="unit-label">${unitLabel}:</span> <span class="unit-value">${formatNumber(convertedValue)}</span>`;
+            unitsGrid.appendChild(itemDiv);
+          }
+          otherUnitsCategoryName.innerText = currentData.name;
+          otherUnitsArea.style.display = "block";
+        } else {
+          otherUnitsArea.style.display = "none";
+        }
+      }
+
+      categorySelect.addEventListener("change", loadUnits);
+      fromUnitSelect.addEventListener("change", convert);
+      toUnitSelect.addEventListener("change", convert);
+      inputValue.addEventListener("input", convert);
+      convertBtn.addEventListener("click", convert);
+      swapBtn.addEventListener("click", swapUnits);
+
+      // بار اولیه
+      loadUnits();
+    </script>
+  </body>
+</html>
