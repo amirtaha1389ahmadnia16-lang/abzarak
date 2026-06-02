@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>تغییر سایز و فشرده‌سازی تصویر | ابزارک</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Vazirmatn", "Tahoma", sans-serif;
+        background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1rem;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        color: #1e293b;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e2e8f0;
+      }
+      .back-link:hover {
+        background: #f8fafc;
+        transform: translateX(-4px);
+      }
+      .tools-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+      }
+      .card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eef2ff;
+      }
+      h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.2rem;
+        border-right: 4px solid #3b82f6;
+        padding-right: 0.8rem;
+      }
+      .control-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+        background: #f8fafc;
+        padding: 0.6rem;
+        border-radius: 1rem;
+      }
+      .control-group label {
+        font-weight: 600;
+        min-width: 100px;
+      }
+      select,
+      input {
+        font-family: inherit;
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.8rem;
+        border: 1px solid #cbd5e1;
+        background: white;
+        flex: 1;
+      }
+      .upload-area {
+        border: 2px dashed #cbd5e1;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.2s;
+        margin: 1rem 0;
+      }
+      .upload-area:hover {
+        border-color: #3b82f6;
+        background: #f8fafc;
+      }
+      .preview-image {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 0.8rem;
+        margin: 0.5rem 0;
+      }
+      .result-image {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 0.8rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .status-box {
+        background: #f1f5f9;
+        border-radius: 1rem;
+        padding: 0.8rem;
+        text-align: center;
+        margin: 1rem 0;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+      .btn-success {
+        background: #10b981;
+      }
+      .btn-success:hover {
+        background: #059669;
+      }
+      .flex-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+      .loading {
+        background: #fef9c3;
+        color: #854d0e;
+      }
+      .success {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .error {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      @media (max-width: 800px) {
+        .tools-panel {
+          grid-template-columns: 1fr;
+        }
+      }
+      footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #64748b;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="../index.html" class="back-link"
+        ><i class="fas fa-arrow-right"></i> بازگشت به ابزارک</a
+      >
+      <div class="tools-panel">
+        <div class="card">
+          <h2><i class="fas fa-sliders-h"></i> تنظیمات</h2>
+          <div class="control-group">
+            <label>📏 عرض جدید (px):</label>
+            <input
+              type="number"
+              id="targetWidth"
+              placeholder="اختیاری (خالی = خودکار)"
+              min="1"
+            />
+          </div>
+          <div class="control-group">
+            <label>📐 ارتفاع جدید (px):</label>
+            <input
+              type="number"
+              id="targetHeight"
+              placeholder="اختیاری (خالی = خودکار)"
+              min="1"
+            />
+          </div>
+          <div class="control-group">
+            <label>✨ کیفیت (۱-۱۰۰):</label>
+            <input type="number" id="quality" value="85" min="1" max="100" />
+          </div>
+          <div class="control-group">
+            <label>🎨 فرمت خروجی:</label>
+            <select id="outputFormat">
+              <option value="image/jpeg">JPEG</option>
+              <option value="image/png">PNG</option>
+              <option value="image/webp">WebP</option>
+            </select>
+          </div>
+          <div id="uploadArea" class="upload-area">
+            <i
+              class="fas fa-cloud-upload-alt"
+              style="font-size: 2rem; color: #3b82f6"
+            ></i>
+            <p>برای آپلود تصویر کلیک کنید یا بکشید</p>
+            <p style="font-size: 0.7rem">JPG, PNG (حداکثر 10 مگابایت)</p>
+          </div>
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/jpeg,image/png"
+            style="display: none"
+          />
+          <img
+            id="originalPreview"
+            class="preview-image"
+            style="display: none"
+          />
+          <div class="flex-buttons">
+            <button id="applyBtn" class="btn-primary btn-success" disabled>
+              <i class="fas fa-check-circle"></i> اعمال تغییرات
+            </button>
+          </div>
+        </div>
+        <div class="card">
+          <h2><i class="fas fa-magic"></i> نتیجه</h2>
+          <img
+            id="resultImage"
+            class="result-image"
+            src=""
+            alt="خروجی"
+            style="display: none"
+          />
+          <div
+            id="defaultMessage"
+            style="color: #94a3b8; padding: 1rem; text-align: center"
+          >
+            <i class="fas fa-image" style="font-size: 2rem"></i>
+            <p>تصویر پردازش شده در اینجا نمایش داده می‌شود</p>
+          </div>
+          <button
+            id="downloadBtn"
+            class="btn-primary"
+            style="margin-top: 1rem; width: 100%; display: none"
+          >
+            <i class="fas fa-download"></i> دانلود تصویر
+          </button>
+          <div id="processStatus" class="status-box">منتظر انتخاب تصویر...</div>
+        </div>
+      </div>
+      <footer>
+        <i class="fas fa-lock"></i> پردازش در مرورگر شما انجام می‌شود.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        const fileInput = document.getElementById("fileInput");
+        const uploadArea = document.getElementById("uploadArea");
+        const originalPreview = document.getElementById("originalPreview");
+        const resultImage = document.getElementById("resultImage");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const processStatus = document.getElementById("processStatus");
+        const defaultMessage = document.getElementById("defaultMessage");
+        const applyBtn = document.getElementById("applyBtn");
+
+        const targetWidth = document.getElementById("targetWidth");
+        const targetHeight = document.getElementById("targetHeight");
+        const quality = document.getElementById("quality");
+        const outputFormat = document.getElementById("outputFormat");
+
+        let currentFile = null;
+        let originalImg = null;
+
+        function updateStatus(text, type = "info") {
+          processStatus.innerHTML = text;
+          processStatus.classList.remove("loading", "success", "error");
+          if (type === "loading") processStatus.classList.add("loading");
+          else if (type === "success") processStatus.classList.add("success");
+          else if (type === "error") processStatus.classList.add("error");
+        }
+
+        // تابع تغییر اندازه و فشرده‌سازی با Canvas
+        async function resizeAndCompress(file, options) {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              img.src = e.target.result;
+              img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+                let targetW = options.width ? parseInt(options.width) : null;
+                let targetH = options.height ? parseInt(options.height) : null;
+
+                // محاسبه ابعاد جدید با حفظ تناسب
+                if (targetW && targetH) {
+                  width = targetW;
+                  height = targetH;
+                } else if (targetW && !targetH) {
+                  height = (targetW / width) * height;
+                  width = targetW;
+                } else if (targetH && !targetW) {
+                  width = (targetH / height) * width;
+                  height = targetH;
+                }
+                // ابعاد نهایی را به عدد صحیح تبدیل کن
+                width = Math.round(width);
+                height = Math.round(height);
+
+                const canvas = document.createElement("canvas");
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext("2d");
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = "high";
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const qualityVal = options.quality / 100;
+                const format = options.format;
+                canvas.toBlob(
+                  (blob) => {
+                    if (blob) resolve(blob);
+                    else reject(new Error("تبدیل به Blob ناموفق بود"));
+                  },
+                  format,
+                  qualityVal,
+                );
+              };
+              img.onerror = (err) => reject(err);
+            };
+            reader.onerror = (err) => reject(err);
+            reader.readAsDataURL(file);
+          });
+        }
+
+        async function processImage(file) {
+          if (!file) return;
+          const widthVal = targetWidth.value
+            ? parseInt(targetWidth.value)
+            : null;
+          const heightVal = targetHeight.value
+            ? parseInt(targetHeight.value)
+            : null;
+          const qualityVal = parseInt(quality.value);
+          const format = outputFormat.value;
+
+          if (widthVal && widthVal < 1) {
+            updateStatus("❌ عرض باید بزرگتر از 0 باشد.", "error");
+            return;
+          }
+          if (heightVal && heightVal < 1) {
+            updateStatus("❌ ارتفاع باید بزرگتر از 0 باشد.", "error");
+            return;
+          }
+
+          updateStatus("🔄 در حال تغییر اندازه و فشرده‌سازی...", "loading");
+          resultImage.style.display = "none";
+          downloadBtn.style.display = "none";
+          defaultMessage.style.display = "none";
+
+          try {
+            const options = {
+              width: widthVal,
+              height: heightVal,
+              quality: qualityVal,
+              format: format,
+            };
+            const compressedBlob = await resizeAndCompress(file, options);
+            const url = URL.createObjectURL(compressedBlob);
+            resultImage.src = url;
+            resultImage.style.display = "block";
+            downloadBtn.style.display = "flex";
+
+            const originalSize = (file.size / 1024).toFixed(2);
+            const newSize = (compressedBlob.size / 1024).toFixed(2);
+            updateStatus(
+              `✅ انجام شد! ${originalSize}KB → ${newSize}KB`,
+              "success",
+            );
+          } catch (err) {
+            console.error(err);
+            updateStatus("❌ خطا: " + err.message, "error");
+            defaultMessage.style.display = "block";
+          }
+        }
+
+        fileInput.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (
+            file &&
+            (file.type === "image/jpeg" || file.type === "image/png")
+          ) {
+            if (file.size > 10 * 1024 * 1024) {
+              updateStatus("❌ حجم فایل بیشتر از 10 مگابایت است.", "error");
+              applyBtn.disabled = true;
+              return;
+            }
+            currentFile = file;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              originalPreview.src = event.target.result;
+              originalPreview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+            updateStatus(
+              "✅ تصویر انتخاب شد. تنظیمات را تغییر دهید و دکمه اعمال را بزنید.",
+              "success",
+            );
+            applyBtn.disabled = false;
+            resultImage.style.display = "none";
+            downloadBtn.style.display = "none";
+            defaultMessage.style.display = "block";
+          } else {
+            updateStatus("❌ لطفاً یک فایل JPG یا PNG انتخاب کنید.", "error");
+            applyBtn.disabled = true;
+          }
+        });
+
+        applyBtn.addEventListener("click", () => {
+          if (currentFile) {
+            processImage(currentFile);
+          } else {
+            updateStatus("❌ ابتدا یک تصویر انتخاب کنید.", "error");
+          }
+        });
+
+        uploadArea.addEventListener("click", () => fileInput.click());
+
+        downloadBtn.addEventListener("click", () => {
+          if (resultImage.src) {
+            const link = document.createElement("a");
+            const format = outputFormat.value.split("/")[1];
+            link.download = `optimized_${Date.now()}.${format}`;
+            link.href = resultImage.src;
+            link.click();
+          }
+        });
+
+        window.addEventListener("dragover", (e) => e.preventDefault());
+        window.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const file = e.dataTransfer.files[0];
+          if (
+            file &&
+            (file.type === "image/jpeg" || file.type === "image/png")
+          ) {
+            fileInput.files = e.dataTransfer.files;
+            const changeEvent = new Event("change", { bubbles: true });
+            fileInput.dispatchEvent(changeEvent);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
