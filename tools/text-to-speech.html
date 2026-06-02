@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>متن به صدا | ابزارک</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Vazirmatn", "Tahoma", sans-serif;
+      }
+      body {
+        font-family: "Vazirmatn", "Tahoma", sans-serif;
+        background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1rem;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        color: #1e293b;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        transition: 0.2s;
+        border: 1px solid #e2e8f0;
+      }
+      .back-link:hover {
+        background: #f8fafc;
+        transform: translateX(-4px);
+      }
+      .tools-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+      }
+      .card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eef2ff;
+      }
+      h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.2rem;
+        border-right: 4px solid #3b82f6;
+        padding-right: 0.8rem;
+      }
+      .control-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1rem;
+        background: #f8fafc;
+        padding: 0.6rem;
+        border-radius: 1rem;
+      }
+      .control-group label {
+        font-weight: 600;
+        min-width: 80px;
+      }
+      select,
+      input[type="range"],
+      input[type="file"] {
+        font-family: inherit;
+        padding: 0.4rem 0.6rem;
+        border-radius: 0.8rem;
+        border: 1px solid #cbd5e1;
+        background: white;
+      }
+      select {
+        flex: 1;
+        min-width: 150px;
+      }
+      input[type="range"] {
+        flex: 1;
+      }
+      textarea {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 1rem;
+        border: 1px solid #cbd5e1;
+        font-size: 1rem;
+        margin: 0.5rem 0;
+        resize: vertical;
+        font-family: inherit;
+      }
+      .counter {
+        font-size: 0.75rem;
+        color: #475569;
+        text-align: left;
+        margin-top: -0.3rem;
+        margin-bottom: 0.5rem;
+      }
+      .btn-group {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        margin: 1rem 0;
+      }
+      .primary-btn {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.2rem;
+        border-radius: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .primary-btn:hover {
+        background: #2563eb;
+      }
+      .secondary-btn {
+        background: #e2e8f0;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .secondary-btn:hover {
+        background: #cbd5e1;
+      }
+      .danger-btn {
+        background: #dc2626;
+        color: white;
+      }
+      .danger-btn:hover {
+        background: #b91c1c;
+      }
+      .status-box {
+        background: #f1f5f9;
+        border-radius: 1rem;
+        padding: 0.8rem;
+        text-align: center;
+        margin: 1rem 0;
+      }
+      .preview-box {
+        background: #fefefe;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1rem;
+        min-height: 180px;
+        max-height: 300px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+      .range-value {
+        background: #cbd5e1;
+        padding: 0.2rem 0.6rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        font-weight: bold;
+      }
+      @media (max-width: 800px) {
+        .tools-panel {
+          grid-template-columns: 1fr;
+        }
+      }
+      footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #64748b;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="index.html" class="back-link"
+        ><i class="fas fa-arrow-right"></i> بازگشت به ابزارک</a
+      >
+      <div class="tools-panel">
+        <!-- سمت راست: تنظیمات و ویرایشگر متن -->
+        <div class="card">
+          <h2><i class="fas fa-sliders-h"></i> تنظیمات صدا</h2>
+          <div class="control-group">
+            <label>🗣️ انتخاب صدا:</label>
+            <select id="voiceSelect"></select>
+          </div>
+          <div class="control-group">
+            <label>🎚️ فیلتر زبان:</label>
+            <select id="langFilter">
+              <option value="">همه زبان‌ها</option>
+              <option value="fa">فارسی</option>
+              <option value="en">انگلیسی</option>
+              <option value="ar">عربی</option>
+              <option value="tr">ترکی</option>
+              <option value="de">آلمانی</option>
+              <option value="fr">فرانسوی</option>
+              <option value="es">اسپانیایی</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label>⏩ سرعت گفتار:</label>
+            <input
+              type="range"
+              id="rateSlider"
+              min="0.5"
+              max="2"
+              step="0.05"
+              value="1"
+            />
+            <span id="rateValue" class="range-value">1.0</span>
+          </div>
+          <div class="control-group">
+            <label>🎵 زیر و بمی (Pitch):</label>
+            <input
+              type="range"
+              id="pitchSlider"
+              min="0.5"
+              max="2"
+              step="0.05"
+              value="1"
+            />
+            <span id="pitchValue" class="range-value">1.0</span>
+          </div>
+          <div class="control-group">
+            <label>📁 آپلود فایل TXT:</label>
+            <input type="file" id="uploadFile" accept=".txt" style="flex: 1" />
+            <button id="loadFileBtn" class="secondary-btn">بارگذاری</button>
+          </div>
+          <label><i class="fas fa-paragraph"></i> متن خود را وارد کنید:</label>
+          <textarea
+            id="textInput"
+            rows="6"
+            placeholder="متن خود را اینجا بنویسید..."
+          ></textarea>
+          <div class="counter" id="charCounter">کاراکتر: 0 | کلمه: 0</div>
+          <div class="btn-group">
+            <button id="copyTextBtn" class="secondary-btn">
+              <i class="fas fa-copy"></i> کپی متن
+            </button>
+            <button id="clearTextBtn" class="secondary-btn">
+              <i class="fas fa-trash-alt"></i> پاک کردن
+            </button>
+            <button id="saveLocalBtn" class="secondary-btn">
+              <i class="fas fa-save"></i> ذخیره موقت
+            </button>
+            <button id="loadLocalBtn" class="secondary-btn">
+              <i class="fas fa-undo-alt"></i> بازیابی
+            </button>
+          </div>
+          <div id="infoStatus" class="status-box">
+            <i class="fas fa-info-circle"></i> متن را وارد کنید و دکمه پخش را
+            بزنید.
+          </div>
+        </div>
+
+        <!-- سمت چپ: پیش‌نمایش و کنترل پخش -->
+        <div class="card">
+          <h2><i class="fas fa-headphones"></i> پخش صدا</h2>
+          <div id="textPreview" class="preview-box">
+            (پیش‌نمایش متن در اینجا نمایش داده می‌شود)
+          </div>
+          <div class="btn-group" style="justify-content: center">
+            <button id="speakBtn" class="primary-btn">
+              <i class="fas fa-play"></i> پخش صدا
+            </button>
+            <button id="pauseBtn" class="secondary-btn" disabled>
+              <i class="fas fa-pause"></i> مکث
+            </button>
+            <button id="resumeBtn" class="secondary-btn" disabled>
+              <i class="fas fa-play-circle"></i> ادامه
+            </button>
+            <button id="stopBtn" class="secondary-btn danger-btn" disabled>
+              <i class="fas fa-stop"></i> توقف
+            </button>
+          </div>
+          <div id="speechState" class="status-box" style="background: #e2e8f0">
+            وضعیت: آماده
+          </div>
+          <p style="font-size: 0.75rem; margin-top: 0.8rem; color: #475569">
+            <i class="fas fa-lightbulb"></i> برای تغییر صدا، ابتدا فیلتر زبان را
+            تنظیم کنید. صدای انتخابی باید با متن هماهنگ باشد.
+          </p>
+        </div>
+      </div>
+      <footer>
+        <i class="fas fa-lock"></i> پردازش در مرورگر شما - صدایی به سرور ارسال
+        نمی‌شود.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        // ---------- عناصر DOM ----------
+        const voiceSelect = document.getElementById("voiceSelect");
+        const langFilter = document.getElementById("langFilter");
+        const rateSlider = document.getElementById("rateSlider");
+        const rateValue = document.getElementById("rateValue");
+        const pitchSlider = document.getElementById("pitchSlider");
+        const pitchValue = document.getElementById("pitchValue");
+        const textInput = document.getElementById("textInput");
+        const textPreview = document.getElementById("textPreview");
+        const speakBtn = document.getElementById("speakBtn");
+        const pauseBtn = document.getElementById("pauseBtn");
+        const resumeBtn = document.getElementById("resumeBtn");
+        const stopBtn = document.getElementById("stopBtn");
+        const speechState = document.getElementById("speechState");
+        const infoStatus = document.getElementById("infoStatus");
+        const copyTextBtn = document.getElementById("copyTextBtn");
+        const clearTextBtn = document.getElementById("clearTextBtn");
+        const saveLocalBtn = document.getElementById("saveLocalBtn");
+        const loadLocalBtn = document.getElementById("loadLocalBtn");
+        const uploadFile = document.getElementById("uploadFile");
+        const loadFileBtn = document.getElementById("loadFileBtn");
+        const charCounter = document.getElementById("charCounter");
+
+        let voices = [];
+        let currentUtterance = null;
+        let isSpeaking = false;
+        let isPaused = false;
+
+        // پشتیبانی از SpeechSynthesis
+        if (!window.speechSynthesis) {
+          infoStatus.innerHTML =
+            '<i class="fas fa-exclamation-triangle"></i> مرورگر شما از گفتار پشتیبانی نمی‌کند.';
+          speakBtn.disabled = true;
+          return;
+        }
+
+        // ---------- بارگذاری لیست صداها ----------
+        function loadVoices() {
+          voices = window.speechSynthesis.getVoices();
+          if (!voices.length) {
+            setTimeout(loadVoices, 100);
+            return;
+          }
+          populateVoiceList();
+        }
+        function populateVoiceList() {
+          const selectedLang = langFilter.value;
+          let filtered = voices;
+          if (selectedLang) {
+            filtered = voices.filter((voice) =>
+              voice.lang.startsWith(selectedLang),
+            );
+            if (filtered.length === 0) filtered = voices; // fallback
+          }
+          voiceSelect.innerHTML = "";
+          filtered.forEach((voice) => {
+            const option = document.createElement("option");
+            option.value = voice.name;
+            option.textContent = `${voice.name} (${voice.lang})`;
+            voiceSelect.appendChild(option);
+          });
+          if (voiceSelect.options.length === 0) {
+            voiceSelect.innerHTML = "<option>هیچ صدایی یافت نشد</option>";
+          }
+        }
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices();
+
+        // فیلتر زبان تغییر کند
+        langFilter.addEventListener("change", () => {
+          populateVoiceList();
+        });
+
+        // ---------- به‌روزرسانی شمارش کاراکتر و کلمه ----------
+        function updateCounter() {
+          const text = textInput.value;
+          const chars = text.length;
+          const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+          charCounter.innerText = `کاراکتر: ${chars} | کلمه: ${words}`;
+        }
+        textInput.addEventListener("input", () => {
+          updateCounter();
+          updatePreview();
+        });
+        function updatePreview() {
+          const txt = textInput.value;
+          textPreview.innerText = txt || "(متن خالی است)";
+        }
+        updateCounter();
+        updatePreview();
+
+        // ---------- اسلایدرها ----------
+        rateSlider.addEventListener(
+          "input",
+          () => (rateValue.innerText = rateSlider.value),
+        );
+        pitchSlider.addEventListener(
+          "input",
+          () => (pitchValue.innerText = pitchSlider.value),
+        );
+
+        // ---------- کنترل پخش ----------
+        function cancelSpeech() {
+          if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+          }
+          isSpeaking = false;
+          isPaused = false;
+          currentUtterance = null;
+          updateButtonsState();
+          speechState.innerText = "وضعیت: متوقف";
+          infoStatus.innerHTML =
+            '<i class="fas fa-info-circle"></i> پخش متوقف شد.';
+        }
+        function updateButtonsState() {
+          speakBtn.disabled = isSpeaking && !isPaused;
+          pauseBtn.disabled = !(isSpeaking && !isPaused);
+          resumeBtn.disabled = !(isSpeaking && isPaused);
+          stopBtn.disabled = !isSpeaking;
+        }
+        function speak() {
+          const text = textInput.value.trim();
+          if (!text) {
+            infoStatus.innerHTML =
+              '<i class="fas fa-exclamation-triangle"></i> لطفاً متنی وارد کنید.';
+            return;
+          }
+          cancelSpeech();
+          const utterance = new SpeechSynthesisUtterance(text);
+          const selectedVoiceName = voiceSelect.value;
+          const selectedVoice = voices.find(
+            (v) => v.name === selectedVoiceName,
+          );
+          if (selectedVoice) utterance.voice = selectedVoice;
+          utterance.rate = parseFloat(rateSlider.value);
+          utterance.pitch = parseFloat(pitchSlider.value);
+          utterance.lang = selectedVoice ? selectedVoice.lang : "fa-IR";
+          utterance.onstart = () => {
+            isSpeaking = true;
+            isPaused = false;
+            updateButtonsState();
+            speechState.innerText = "وضعیت: در حال پخش...";
+            infoStatus.innerHTML =
+              '<i class="fas fa-volume-up"></i> در حال صحبت کردن...';
+          };
+          utterance.onend = () => {
+            isSpeaking = false;
+            isPaused = false;
+            currentUtterance = null;
+            updateButtonsState();
+            speechState.innerText = "وضعیت: پایان یافت";
+            infoStatus.innerHTML =
+              '<i class="fas fa-check-circle"></i> پخش کامل شد.';
+          };
+          utterance.onerror = (e) => {
+            console.error(e);
+            isSpeaking = false;
+            isPaused = false;
+            updateButtonsState();
+            speechState.innerText = "وضعیت: خطا";
+            infoStatus.innerHTML =
+              '<i class="fas fa-exclamation-triangle"></i> خطا در پخش صدا.';
+          };
+          currentUtterance = utterance;
+          window.speechSynthesis.speak(utterance);
+          updateButtonsState();
+        }
+        function pauseSpeech() {
+          if (window.speechSynthesis.speaking && !isPaused) {
+            window.speechSynthesis.pause();
+            isPaused = true;
+            updateButtonsState();
+            speechState.innerText = "وضعیت: مکث";
+            infoStatus.innerHTML =
+              '<i class="fas fa-pause"></i> پخش متوقف شد. برای ادامه کلیک کنید.';
+          }
+        }
+        function resumeSpeech() {
+          if (isPaused) {
+            window.speechSynthesis.resume();
+            isPaused = false;
+            updateButtonsState();
+            speechState.innerText = "وضعیت: در حال پخش...";
+            infoStatus.innerHTML =
+              '<i class="fas fa-volume-up"></i> ادامه پخش...';
+          }
+        }
+        function stopSpeech() {
+          cancelSpeech();
+        }
+
+        speakBtn.addEventListener("click", speak);
+        pauseBtn.addEventListener("click", pauseSpeech);
+        resumeBtn.addEventListener("click", resumeSpeech);
+        stopBtn.addEventListener("click", stopSpeech);
+
+        // ---------- دکمه‌های کمکی ----------
+        copyTextBtn.addEventListener("click", () => {
+          const text = textInput.value;
+          if (text) {
+            navigator.clipboard.writeText(text);
+            alert("✅ متن کپی شد");
+          } else alert("متن خالی است");
+        });
+        clearTextBtn.addEventListener("click", () => {
+          textInput.value = "";
+          updateCounter();
+          updatePreview();
+          cancelSpeech();
+        });
+        const STORAGE_KEY = "textToSpeech_backup";
+        saveLocalBtn.addEventListener("click", () => {
+          const text = textInput.value;
+          if (text) {
+            localStorage.setItem(STORAGE_KEY, text);
+            alert("متن ذخیره شد");
+          } else alert("متن خالی است");
+        });
+        loadLocalBtn.addEventListener("click", () => {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            textInput.value = saved;
+            updateCounter();
+            updatePreview();
+            alert("متن بازیابی شد");
+          } else alert("هیچ متن ذخیره‌ای یافت نشد");
+        });
+        loadFileBtn.addEventListener("click", () => {
+          const file = uploadFile.files[0];
+          if (!file) {
+            alert("لطفاً یک فایل TXT انتخاب کنید.");
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            textInput.value = e.target.result;
+            updateCounter();
+            updatePreview();
+            alert("فایل با موفقیت بارگذاری شد.");
+          };
+          reader.onerror = () => alert("خطا در خواندن فایل");
+          reader.readAsText(file, "UTF-8");
+        });
+      })();
+    </script>
+  </body>
+</html>
