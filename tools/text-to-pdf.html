@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <title>دیکته صوتی + افکت تایپ | ابزارک</title>
+    <title>ابزار حرفه‌ای متن به PDF | ابزارک</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -15,22 +15,29 @@
       href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <!-- کتابخانه‌های تبدیل -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-      }
-      body {
         font-family: "Vazirmatn", "Tahoma", sans-serif;
+      }
+
+      body {
         background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 100%);
         padding: 1rem;
         min-height: 100vh;
       }
+
       .container {
         max-width: 1400px;
         margin: 0 auto;
       }
+
+      /* دکمه بازگشت */
       .back-link {
         display: inline-flex;
         align-items: center;
@@ -42,18 +49,24 @@
         color: #1e293b;
         font-weight: 500;
         margin-bottom: 1.5rem;
+        transition: 0.2s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         border: 1px solid #e2e8f0;
       }
       .back-link:hover {
         background: #f8fafc;
         transform: translateX(-4px);
       }
+
+      /* گرید دو ستونه با واکنش‌گرایی */
       .tools-panel {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1.5rem;
         align-items: start;
       }
+
+      /* کارت تنظیمات و پیش‌نمایش */
       .card {
         background: white;
         border-radius: 1.5rem;
@@ -61,484 +74,511 @@
         box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
         border: 1px solid #eef2ff;
       }
-      h2 {
+
+      .card h2 {
         font-size: 1.4rem;
         font-weight: 700;
+        margin-bottom: 1rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        margin-bottom: 1.2rem;
         border-right: 4px solid #3b82f6;
         padding-right: 0.8rem;
       }
+
+      /* گروه کنترل */
       .control-group {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 0.8rem;
+        gap: 0.6rem;
         margin-bottom: 1rem;
         background: #f8fafc;
         padding: 0.6rem;
         border-radius: 1rem;
       }
       .control-group label {
+        font-size: 0.85rem;
         font-weight: 600;
-        min-width: 80px;
+        color: #1e293b;
+        min-width: 85px;
       }
-      select,
-      button {
-        font-family: inherit;
-      }
-      select {
+      .control-group select,
+      .control-group input {
         padding: 0.4rem 0.8rem;
         border-radius: 0.8rem;
         border: 1px solid #cbd5e1;
         background: white;
+        font-family: inherit;
+        font-size: 0.85rem;
       }
-      .microphone-btn {
-        background: #3b82f6;
-        color: white;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: 2rem;
-        font-weight: bold;
+      input[type="color"] {
+        width: 45px;
+        height: 35px;
+        padding: 0;
         cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
       }
-      .microphone-btn:hover {
-        background: #2563eb;
-        transform: scale(1.02);
-      }
-      .stop-btn {
-        background: #dc2626;
-      }
-      .stop-btn:hover {
-        background: #b91c1c;
-      }
-      .status-wave {
-        background: #f1f5f9;
+      textarea {
+        width: 100%;
+        padding: 1rem;
         border-radius: 1rem;
-        padding: 0.8rem;
-        text-align: center;
-        margin: 1rem 0;
-        font-weight: 500;
-      }
-      .result-box {
-        background: #fefefe;
-        border: 1px solid #e2e8f0;
-        border-radius: 1rem;
-        padding: 1.2rem;
-        min-height: 250px;
-        margin: 1rem 0;
+        border: 1px solid #cbd5e1;
+        font-family: inherit;
         font-size: 1rem;
-        line-height: 1.6;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        font-family: "Vazirmatn", monospace;
-      }
-      .typewriter-box {
+        margin: 0.5rem 0 1rem 0;
+        resize: vertical;
         background: #fefefe;
-        border: 2px solid #3b82f6;
-        border-radius: 1rem;
-        padding: 1.2rem;
-        min-height: 250px;
-        margin: 1rem 0;
-        font-size: 1rem;
-        line-height: 1.6;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        font-family: "Vazirmatn", monospace;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-        transition: all 0.2s;
       }
       .btn-group {
         display: flex;
         gap: 0.8rem;
-        flex-wrap: wrap;
         margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+      .btn-primary {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 0.7rem 1.2rem;
+        border-radius: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        flex: 1;
+        transition: 0.2s;
+      }
+      .btn-primary:hover {
+        background: #1d4ed8;
       }
       .btn-secondary {
         background: #e2e8f0;
+        color: #1e293b;
         border: none;
-        padding: 0.5rem 1rem;
+        padding: 0.7rem 1.2rem;
         border-radius: 2rem;
         font-weight: 500;
         cursor: pointer;
+        transition: 0.2s;
       }
       .btn-secondary:hover {
         background: #cbd5e1;
       }
-      .btn-primary {
-        background: #3b82f6;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 2rem;
-        font-weight: 500;
-        cursor: pointer;
+
+      /* پیش‌نمایش زنده */
+      .live-preview {
+        background: white;
+        border-radius: 1rem;
+        min-height: 550px;
+        max-height: 70vh;
+        overflow-y: auto;
+        font-family: "Vazirmatn", sans-serif;
+        transition: all 0.2s;
+        border: 1px solid #e2e8f0;
       }
-      .btn-primary:hover {
-        background: #2563eb;
+
+      /* مقیاس کیفیت */
+      .range-value {
+        background: #e2e8f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        font-weight: bold;
       }
-      .wave-animation i {
-        animation: pulse 1s infinite;
-      }
-      @keyframes pulse {
-        0% {
-          opacity: 0.3;
-          transform: scale(0.9);
-        }
-        100% {
-          opacity: 1;
-          transform: scale(1.2);
-        }
-      }
-      @media (max-width: 800px) {
+
+      /* ریسپانسیو */
+      @media (max-width: 900px) {
         .tools-panel {
           grid-template-columns: 1fr;
+          gap: 1.2rem;
+        }
+        body {
+          padding: 0.8rem;
+        }
+        .card {
+          padding: 1rem;
         }
       }
-      footer {
-        text-align: center;
-        margin-top: 2rem;
-        color: #64748b;
-        font-size: 0.8rem;
+      @media (max-width: 500px) {
+        .control-group {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .control-group label {
+          min-width: auto;
+        }
+        .btn-group {
+          flex-direction: column;
+        }
+      }
+
+      /* استایل اسکرول */
+      .live-preview::-webkit-scrollbar {
+        width: 6px;
+      }
+      .live-preview::-webkit-scrollbar-track {
+        background: #e2e8f0;
+        border-radius: 10px;
+      }
+      .live-preview::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <a href="../index.html" class="back-link"
-        ><i class="fas fa-arrow-right"></i> بازگشت به ابزارک</a
+        ><i class="fas fa-arrow-right"></i> بازگشت به صفحه اصلی ابزارک</a
       >
       <div class="tools-panel">
-        <!-- بخش تنظیمات و کنترل -->
+        <!-- سمت راست: تنظیمات و ویرایشگر -->
         <div class="card">
-          <h2><i class="fas fa-microphone-alt"></i> تنظیمات دیکته صوتی</h2>
+          <h2><i class="fas fa-sliders-h"></i> تنظیمات حرفه‌ای PDF</h2>
+          <label><i class="fas fa-edit"></i> متن خود را وارد کنید:</label>
+          <textarea
+            id="textInput"
+            rows="5"
+            placeholder="مثال: سلام، این یک متن آزمایشی است.&#10;این ابزار کاملاً در مرورگر شما کار می‌کند.&#10;&#10;پشتیبانی از فارسی و انگلیسی و تنظیمات متنوع"
+          ></textarea>
+
           <div class="control-group">
-            <label>🌐 زبان ورودی:</label>
-            <select id="languageSelect">
-              <option value="fa-IR">فارسی</option>
-              <option value="en-US">انگلیسی (US)</option>
-              <option value="en-GB">انگلیسی (UK)</option>
-              <option value="ar-EG">عربی</option>
-              <option value="tr-TR">ترکی</option>
-              <option value="de-DE">آلمانی</option>
-              <option value="fr-FR">فرانسوی</option>
-              <option value="es-ES">اسپانیایی</option>
+            <label>فرمت کاغذ:</label>
+            <select id="paperFormat">
+              <option value="a4">A4 (استاندارد)</option>
+              <option value="a3">A3 (بزرگ)</option>
+              <option value="letter">Letter</option>
+              <option value="legal">Legal</option>
+            </select>
+            <label>جهت:</label>
+            <select id="orientation">
+              <option value="portrait">عمودی (Portrait)</option>
+              <option value="landscape">افقی (Landscape)</option>
             </select>
           </div>
-          <div id="permissionStatus" class="status-wave">
-            <i class="fas fa-info-circle"></i> ابتدا دکمه «درخواست دسترسی
-            میکروفون» را بزنید.
+
+          <div class="control-group">
+            <label>حاشیه (پیکسل):</label>
+            <input
+              type="number"
+              id="marginPx"
+              value="40"
+              step="5"
+              min="0"
+              max="150"
+            />
           </div>
-          <button id="requestPermissionBtn" class="microphone-btn">
-            <i class="fas fa-microphone"></i> درخواست دسترسی میکروفون
-          </button>
-          <div id="recordingControls" style="display: none; margin-top: 1rem">
-            <button id="startRecordBtn" class="microphone-btn">
-              <i class="fas fa-play"></i> شروع ضبط
-            </button>
-            <button id="stopRecordBtn" class="microphone-btn stop-btn" disabled>
-              <i class="fas fa-stop"></i> توقف و نمایش با افکت
-            </button>
+
+          <div class="control-group">
+            <label>چینش متن:</label>
+            <select id="textAlign">
+              <option value="right">راست‌چین</option>
+              <option value="center">وسط‌چین</option>
+              <option value="left">چپ‌چین</option>
+              <option value="justify">هم‌راستا (توجیه)</option>
+            </select>
           </div>
-          <div id="waveStatus" class="status-wave" style="display: none">
-            <i class="fas fa-microphone-alt wave-animation"></i> در حال ضبط...
-            صحبت کنید. بعد از توقف، متن با افکت تایپ می‌شود.
+
+          <div class="control-group">
+            <label>اندازه فونت (pt):</label>
+            <input
+              type="number"
+              id="fontSize"
+              value="14"
+              step="1"
+              min="8"
+              max="40"
+            />
+            <label>ارتفاع سطر:</label>
+            <input
+              type="number"
+              id="lineHeight"
+              value="1.6"
+              step="0.1"
+              min="1"
+              max="3"
+            />
+          </div>
+
+          <div class="control-group">
+            <label>رنگ متن:</label>
+            <input type="color" id="textColor" value="#1e293b" />
+            <label>رنگ پس‌زمینه:</label>
+            <input type="color" id="bgColor" value="#ffffff" />
+          </div>
+
+          <div class="control-group">
+            <label>فاصله پاراگراف (px):</label>
+            <input
+              type="number"
+              id="paragraphMargin"
+              value="16"
+              step="2"
+              min="0"
+              max="80"
+            />
+          </div>
+
+          <div class="control-group">
+            <label>کیفیت رندر (مقیاس):</label>
+            <input
+              type="range"
+              id="scale"
+              min="1"
+              max="4"
+              step="0.1"
+              value="2.5"
+            />
+            <span class="range-value" id="scaleValue">2.5</span>
+            <small style="color: #475569"
+              >(بالاتر = کیفیت بهتر و حجم بیشتر)</small
+            >
+          </div>
+
+          <div class="control-group">
+            <label>نام فایل خروجی:</label>
+            <input
+              type="text"
+              id="fileName"
+              value="document"
+              placeholder="نام فایل"
+            />
+            <span>.pdf</span>
+          </div>
+
+          <div class="btn-group">
+            <button id="clearBtn" class="btn-secondary">
+              <i class="fas fa-eraser"></i> پاک کردن متن
+            </button>
+            <button id="resetBtn" class="btn-secondary">
+              <i class="fas fa-undo-alt"></i> تنظیمات پیش‌فرض
+            </button>
+            <button id="generateBtn" class="btn-primary">
+              <i class="fas fa-download"></i> ساخت PDF نهایی
+            </button>
           </div>
         </div>
 
-        <!-- بخش نمایش متن با افکت تایپ -->
+        <!-- سمت چپ: پیش‌نمایش زنده -->
         <div class="card">
-          <h2><i class="fas fa-typewriter"></i> متن نهایی با افکت تایپ</h2>
-          <div id="typewriterBox" class="typewriter-box">
-            (متن پس از توقف ضبط اینجا تایپ می‌شود...)
-          </div>
-          <div class="btn-group">
-            <button id="copyTextBtn" class="btn-secondary">
-              <i class="fas fa-copy"></i> کپی متن
-            </button>
-            <button id="downloadTxtBtn" class="btn-secondary">
-              <i class="fas fa-download"></i> دانلود TXT
-            </button>
-            <button id="clearTextBtn" class="btn-secondary">
-              <i class="fas fa-trash-alt"></i> پاک کردن متن
-            </button>
-            <button id="replayTypeBtn" class="btn-primary">
-              <i class="fas fa-redo-alt"></i> نمایش مجدد با افکت
-            </button>
-            <button id="readTextBtn" class="btn-secondary">
-              <i class="fas fa-volume-up"></i> بازخوانی صوتی
-            </button>
-          </div>
-          <p style="font-size: 0.75rem; margin-top: 0.8rem; color: #475569">
-            <i class="fas fa-info-circle"></i> ابتدا ضبط کنید، سپس با زدن دکمه
-            توقف، متن با افکت تایپ نوشته می‌شود.
+          <h2><i class="fas fa-eye"></i> پیش‌نمایش دقیق PDF</h2>
+          <div
+            id="livePreview"
+            class="live-preview"
+            style="padding: 20px"
+          ></div>
+          <p
+            style="
+              font-size: 0.75rem;
+              margin-top: 0.8rem;
+              color: #475569;
+              text-align: center;
+            "
+          >
+            <i class="fas fa-mobile-alt"></i> این پیش‌نمایش با همان استایل نهایی
+            PDF نمایش داده می‌شود.
           </p>
         </div>
       </div>
-      <footer>
-        <i class="fas fa-lock"></i> پردازش در مرورگر شما - صدایی ارسال نمی‌شود.
-      </footer>
     </div>
 
     <script>
       (function () {
-        // ---------- DOM elements ----------
-        const permissionStatus = document.getElementById("permissionStatus");
-        const requestBtn = document.getElementById("requestPermissionBtn");
-        const recordingDiv = document.getElementById("recordingControls");
-        const startBtn = document.getElementById("startRecordBtn");
-        const stopBtn = document.getElementById("stopRecordBtn");
-        const typewriterBox = document.getElementById("typewriterBox");
-        const copyBtn = document.getElementById("copyTextBtn");
-        const downloadBtn = document.getElementById("downloadTxtBtn");
-        const clearBtn = document.getElementById("clearTextBtn");
-        const replayTypeBtn = document.getElementById("replayTypeBtn");
-        const readTextBtn = document.getElementById("readTextBtn");
-        const languageSelect = document.getElementById("languageSelect");
-        const waveStatus = document.getElementById("waveStatus");
+        // -------------------- دریافت المان‌ها --------------------
+        const textInput = document.getElementById("textInput");
+        const livePreview = document.getElementById("livePreview");
+        const generateBtn = document.getElementById("generateBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const resetBtn = document.getElementById("resetBtn");
 
-        let recognition = null;
-        let isListening = false;
-        let mediaStream = null;
-        let currentLang = "fa-IR";
-        let finalText = ""; // متن نهایی جمع‌آوری شده (بدون تکرار)
-        let typewriterInterval = null;
+        const paperFormat = document.getElementById("paperFormat");
+        const orientation = document.getElementById("orientation");
+        const marginPx = document.getElementById("marginPx");
+        const textAlign = document.getElementById("textAlign");
+        const fontSize = document.getElementById("fontSize");
+        const lineHeight = document.getElementById("lineHeight");
+        const textColor = document.getElementById("textColor");
+        const bgColor = document.getElementById("bgColor");
+        const paragraphMargin = document.getElementById("paragraphMargin");
+        const scale = document.getElementById("scale");
+        const scaleValue = document.getElementById("scaleValue");
+        const fileNameInput = document.getElementById("fileName");
 
-        // پشتیبانی از SpeechRecognition
-        const SpeechRecognitionAPI =
-          window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognitionAPI) {
-          permissionStatus.innerHTML =
-            '<i class="fas fa-exclamation-triangle"></i> مرورگر شما از تشخیص گفتار پشتیبانی نمی‌کند. لطفاً از Chrome، Edge یا Safari جدید استفاده کنید.';
-          requestBtn.disabled = true;
-          return;
-        }
+        // به‌روزرسانی مقدار نمایشی مقیاس
+        scale.addEventListener("input", () => {
+          scaleValue.innerText = scale.value;
+        });
 
-        // ---------- درخواست دسترسی میکروفون ----------
-        async function requestMicrophone() {
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-              audio: true,
-            });
-            mediaStream = stream;
-            permissionStatus.innerHTML =
-              '<i class="fas fa-check-circle" style="color:#16a34a;"></i> دسترسی تأیید شد. می‌توانید ضبط را شروع کنید.';
-            permissionStatus.style.background = "#dcfce7";
-            requestBtn.style.display = "none";
-            recordingDiv.style.display = "block";
-            initRecognition();
-          } catch (err) {
-            permissionStatus.innerHTML =
-              '<i class="fas fa-ban"></i> دسترسی به میکروفون رد شد یا خطایی رخ داد.';
-            permissionStatus.style.background = "#fee2e2";
-          }
-        }
-
-        function initRecognition() {
-          if (recognition) {
-            try {
-              recognition.abort();
-            } catch (e) {}
-          }
-          recognition = new SpeechRecognitionAPI();
-          recognition.continuous = true;
-          recognition.interimResults = false; // فقط نتایج نهایی بگیریم تا از تکرار جلوگیری شود
-          recognition.lang = currentLang;
-          recognition.maxAlternatives = 1;
-
-          recognition.onstart = () => {
-            isListening = true;
-            startBtn.disabled = true;
-            stopBtn.disabled = false;
-            waveStatus.style.display = "block";
-            permissionStatus.innerHTML =
-              '<i class="fas fa-microphone-alt wave-animation"></i> در حال ضبط... صحبت کنید.';
-            permissionStatus.style.background = "#fef9c3";
-          };
-          recognition.onend = () => {
-            isListening = false;
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            waveStatus.style.display = "none";
-            if (mediaStream) {
-              mediaStream.getTracks().forEach((t) => t.stop());
-              mediaStream = null;
-            }
-            permissionStatus.innerHTML =
-              '<i class="fas fa-stop-circle"></i> ضبط متوقف شد. برای ضبط مجدد دکمه شروع را بزنید.';
-            permissionStatus.style.background = "#f1f5f9";
-          };
-          recognition.onerror = (event) => {
-            let errorMsg = "";
-            if (event.error === "no-speech")
-              errorMsg = "صدایی تشخیص داده نشد. میکروفون را بررسی کنید.";
-            else if (event.error === "audio-capture")
-              errorMsg = "میکروفون پیدا نشد.";
-            else if (event.error === "not-allowed")
-              errorMsg = "دسترسی به میکروفون داده نشد.";
-            else errorMsg = "خطا: " + event.error;
-            permissionStatus.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${errorMsg}`;
-            permissionStatus.style.background = "#fee2e2";
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            isListening = false;
-            waveStatus.style.display = "none";
-            if (mediaStream) {
-              mediaStream.getTracks().forEach((t) => t.stop());
-              mediaStream = null;
-            }
-          };
-          recognition.onresult = (event) => {
-            // فقط نتایج نهایی را گرفته و به finalText اضافه می‌کنیم (بدون تکرار)
-            for (let i = event.resultIndex; i < event.results.length; i++) {
-              if (event.results[i].isFinal) {
-                let newPart = event.results[i][0].transcript + " ";
-                // جلوگیری از اضافه کردن تکراری (اگر آخرین متن دقیقاً همان است، نریز)
-                if (!finalText.endsWith(newPart.trim())) {
-                  finalText += newPart;
-                }
-              }
-            }
-          };
-        }
-
-        function startRecording() {
-          if (!recognition) {
-            alert("ابتدا درخواست دسترسی میکروفون را بزنید.");
-            return;
-          }
-          if (!isListening) {
-            finalText = ""; // شروع جدید، متن قبلی پاک می‌شود
-            typewriterBox.innerText = "";
-            const newLang = languageSelect.value;
-            if (newLang !== currentLang) {
-              currentLang = newLang;
-              initRecognition();
-            }
-            recognition.start();
-          }
-        }
-
-        function stopRecording() {
-          if (recognition && isListening) {
-            recognition.stop();
-            // بعد از توقف، افکت تایپ را اجرا کن
-            startTypewriterEffect(finalText);
-          }
-        }
-
-        // ---------- افکت تایپ (نوشتن حرف به حرف یا کلمه به کلمه) ----------
-        function startTypewriterEffect(text) {
-          if (typewriterInterval) clearInterval(typewriterInterval);
-          typewriterBox.innerText = "";
-          if (!text.trim()) {
-            typewriterBox.innerText = "(متن تشخیص داده شده‌ای وجود ندارد)";
-            return;
-          }
-          let index = 0;
-          // برای پشتیبانی از فارسی/انگلیسی، کاراکتر به کاراکتر جلو می‌رویم
-          typewriterInterval = setInterval(() => {
-            if (index < text.length) {
-              typewriterBox.innerText += text.charAt(index);
-              index++;
-              // اسکرول خودکار به پایین
-              typewriterBox.scrollTop = typewriterBox.scrollHeight;
+        // -------------------- تابع تبدیل متن به HTML با پاراگراف‌بندی و فاصله --------------------
+        function formatTextToHTML(text, paraMarginPx) {
+          if (!text.trim())
+            return '<p style="margin:0; color:#94a3b8;">(متن را در قسمت سمت راست وارد کنید...)</p>';
+          // جدا کردن پاراگراف‌ها با دو خط خالی یا بیشتر
+          let paragraphs = text.split(/\n\s*\n/);
+          let html = "";
+          for (let para of paragraphs) {
+            if (para.trim() !== "") {
+              // شکستن خطوط داخل پاراگراف به <br>
+              const lines = para.split("\n");
+              const contentWithBr = lines.join("<br>");
+              html += `<p style="margin-bottom: ${paraMarginPx}px; margin-top: 0; direction: rtl;">${contentWithBr}</p>`;
             } else {
-              clearInterval(typewriterInterval);
-              typewriterInterval = null;
+              // پاراگراف خالی (فاصله عمودی)
+              html += `<p style="margin-bottom: ${paraMarginPx}px;"> </p>`;
             }
-          }, 40); // سرعت تایپ (میلی ثانیه)
-        }
-
-        // نمایش مجدد افکت روی متن فعلی (بدون تغییر متن)
-        function replayTypewriter() {
-          let currentText = typewriterBox.innerText;
-          if (
-            currentText &&
-            currentText !== "(متن تشخیص داده شده‌ای وجود ندارد)"
-          ) {
-            startTypewriterEffect(finalText);
-          } else if (finalText.trim()) {
-            startTypewriterEffect(finalText);
-          } else {
-            alert("هیچ متنی برای نمایش وجود ندارد. ابتدا ضبط کنید.");
           }
+          return html;
         }
 
-        // کپی متن (متن نهایی داخل باکس تایپ)
-        function copyText() {
-          let text = typewriterBox.innerText;
-          if (text && text !== "(متن تشخیص داده شده‌ای وجود ندارد)") {
-            navigator.clipboard.writeText(text);
-            alert("✅ متن کپی شد");
-          } else alert("متن موجود نیست");
+        // -------------------- به‌روزرسانی پیش‌نمایش زنده --------------------
+        function updatePreview() {
+          const rawText = textInput.value;
+          const margin = parseInt(marginPx.value) || 40;
+          const htmlContent = formatTextToHTML(rawText, paragraphMargin.value);
+          // اعمال استایل روی کانتینر پیش‌نمایش
+          livePreview.style.textAlign = textAlign.value;
+          livePreview.style.fontSize = fontSize.value + "pt";
+          livePreview.style.lineHeight = lineHeight.value;
+          livePreview.style.color = textColor.value;
+          livePreview.style.backgroundColor = bgColor.value;
+          livePreview.style.padding = margin + "px";
+          livePreview.style.fontFamily = "'Vazirmatn', 'Tahoma', sans-serif";
+          livePreview.innerHTML = htmlContent;
         }
 
-        function downloadText() {
-          let text = typewriterBox.innerText;
-          if (text && text !== "(متن تشخیص داده شده‌ای وجود ندارد)") {
-            const blob = new Blob([text], { type: "text/plain" });
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = "speech_to_text.txt";
-            a.click();
-            URL.revokeObjectURL(a.href);
-          } else alert("متن موجود نیست");
-        }
+        // رویدادهای به‌روزرسانی
+        textInput.addEventListener("input", updatePreview);
+        const allSettings = [
+          textAlign,
+          fontSize,
+          lineHeight,
+          textColor,
+          bgColor,
+          marginPx,
+          paragraphMargin,
+        ];
+        allSettings.forEach((setting) =>
+          setting.addEventListener("input", updatePreview),
+        );
+        // همچنین برای ایمنی، رنگ پس‌زمینه و حاشیه که قبلاً اضافه شد
+        bgColor.addEventListener("input", updatePreview);
+        marginPx.addEventListener("input", updatePreview);
+        paragraphMargin.addEventListener("input", updatePreview);
 
-        function clearText() {
-          if (typewriterInterval) clearInterval(typewriterInterval);
-          typewriterBox.innerText = "";
-          finalText = "";
-        }
+        // -------------------- دکمه پاک کردن --------------------
+        clearBtn.addEventListener("click", () => {
+          textInput.value = "";
+          updatePreview();
+        });
 
-        function readTextAloud() {
-          let text = typewriterBox.innerText;
-          if (
-            !text ||
-            text === "(متن تشخیص داده شده‌ای وجود ندارد)" ||
-            text === ""
-          ) {
-            alert("هیچ متنی برای بازخوانی وجود ندارد.");
+        // -------------------- تنظیمات پیش‌فرض --------------------
+        resetBtn.addEventListener("click", () => {
+          paperFormat.value = "a4";
+          orientation.value = "portrait";
+          marginPx.value = "40";
+          textAlign.value = "right";
+          fontSize.value = "14";
+          lineHeight.value = "1.6";
+          textColor.value = "#1e293b";
+          bgColor.value = "#ffffff";
+          paragraphMargin.value = "16";
+          scale.value = "2.5";
+          scaleValue.innerText = "2.5";
+          fileNameInput.value = "document";
+          updatePreview();
+        });
+
+        // -------------------- تولید PDF نهایی با html2canvas + jsPDF --------------------
+        generateBtn.addEventListener("click", async () => {
+          const rawText = textInput.value.trim();
+          if (!rawText) {
+            alert("⚠️ لطفاً متنی برای تبدیل وارد کنید.");
             return;
           }
-          if (!window.speechSynthesis) {
-            alert("مرورگر شما از بازخوانی متن پشتیبانی نمی‌کند.");
-            return;
-          }
-          window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = languageSelect.value;
-          utterance.rate = 0.9;
-          utterance.pitch = 1;
-          window.speechSynthesis.speak(utterance);
-        }
 
-        // رویداد دکمه‌ها
-        requestBtn.addEventListener("click", requestMicrophone);
-        startBtn.addEventListener("click", startRecording);
-        stopBtn.addEventListener("click", stopRecording);
-        copyBtn.addEventListener("click", copyText);
-        downloadBtn.addEventListener("click", downloadText);
-        clearBtn.addEventListener("click", clearText);
-        replayTypeBtn.addEventListener("click", replayTypewriter);
-        readTextBtn.addEventListener("click", readTextAloud);
+          // نمایش وضعیت در حال ساخت
+          const originalText = generateBtn.innerHTML;
+          generateBtn.disabled = true;
+          generateBtn.innerHTML =
+            '<i class="fas fa-spinner fa-pulse"></i> در حال ساخت PDF با کیفیت بالا ...';
 
-        languageSelect.addEventListener("change", () => {
-          if (recognition && !isListening) {
-            currentLang = languageSelect.value;
-            initRecognition();
-            permissionStatus.innerHTML = `<i class="fas fa-language"></i> زبان به ${languageSelect.options[languageSelect.selectedIndex].text} تغییر کرد.`;
-          } else if (isListening) {
-            alert("لطفاً ابتدا ضبط را متوقف کنید، سپس زبان را تغییر دهید.");
-            languageSelect.value = currentLang;
+          // ایجاد یک المان مخفی برای رندر کردن دقیق (مشابه پیش‌نمایش ولی با ابعاد ثابت برای کیفیت)
+          const renderDiv = document.createElement("div");
+          renderDiv.style.direction = "rtl";
+          renderDiv.style.fontFamily = "'Vazirmatn', 'Tahoma', sans-serif";
+          renderDiv.style.textAlign = textAlign.value;
+          renderDiv.style.fontSize = fontSize.value + "pt";
+          renderDiv.style.lineHeight = lineHeight.value;
+          renderDiv.style.color = textColor.value;
+          renderDiv.style.backgroundColor = bgColor.value;
+          renderDiv.style.padding = marginPx.value + "px";
+          renderDiv.style.width = "800px"; // عرض ثابت برای رندر یکنواخت
+          renderDiv.style.position = "absolute";
+          renderDiv.style.top = "-9999px";
+          renderDiv.style.left = "-9999px";
+          renderDiv.style.zIndex = "-1";
+          renderDiv.innerHTML = formatTextToHTML(
+            rawText,
+            paragraphMargin.value,
+          );
+          document.body.appendChild(renderDiv);
+
+          try {
+            // رندر با html2canvas
+            const canvas = await html2canvas(renderDiv, {
+              scale: parseFloat(scale.value),
+              backgroundColor: bgColor.value,
+              logging: false,
+              useCORS: true,
+              windowWidth: renderDiv.scrollWidth,
+              windowHeight: renderDiv.scrollHeight,
+            });
+
+            // حذف المان موقت
+            document.body.removeChild(renderDiv);
+
+            // تنظیمات jsPDF بر اساس فرمت و جهت
+            const format = paperFormat.value;
+            const orient = orientation.value === "portrait" ? "p" : "l";
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF(orient, "mm", format);
+
+            const imgData = canvas.toDataURL("image/jpeg", 0.92);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = pdfWidth;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+            let pageIndex = 1;
+
+            pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) {
+              position = heightLeft - imgHeight;
+              pdf.addPage();
+              pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+              heightLeft -= pdfHeight;
+              pageIndex++;
+            }
+
+            // ذخیره فایل با نام دلخواه
+            let fileName = fileNameInput.value.trim();
+            if (fileName === "") fileName = "document";
+            pdf.save(fileName + ".pdf");
+          } catch (error) {
+            console.error(error);
+            alert("❌ خطا در تولید PDF. لطفاً دوباره تلاش کنید.");
+            if (document.body.contains(renderDiv))
+              document.body.removeChild(renderDiv);
+          } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = originalText;
           }
         });
+
+        // مقداردهی اولیه پیش‌نمایش
+        updatePreview();
       })();
     </script>
   </body>
